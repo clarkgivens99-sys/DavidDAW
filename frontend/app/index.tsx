@@ -534,7 +534,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/sequencer')}
       >
-        <Ionicons name="grid" size={20} color="#ffb366" />
+        <Ionicons name="grid" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Beats</Text>
       </TouchableOpacity>
       
