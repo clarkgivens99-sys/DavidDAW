@@ -303,7 +303,7 @@ export default function BeatSequencer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f1419',
+    backgroundColor: '#1a0f0f',
   },
   header: {
     flexDirection: 'row',
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     paddingTop: 20,
-    backgroundColor: '#1e2a4a',
+    backgroundColor: '#4a1a1a',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 69, 0, 0.2)',
     borderRadius: 12,
   },
   title: {
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 69, 0, 0.2)',
     borderRadius: 12,
   },
   transportContainer: {
@@ -343,40 +343,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#162032',
+    backgroundColor: '#2a1212',
     gap: 20,
   },
   playButton: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#ff4500',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#4a90e2',
+    shadowColor: '#ff4500',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
     elevation: 8,
   },
   playButtonActive: {
-    backgroundColor: '#10b981',
+    backgroundColor: '#ff8c00',
   },
   stopButton: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(45, 74, 122, 0.6)',
+    backgroundColor: 'rgba(139, 69, 19, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 69, 0, 0.1)',
   },
   bpmContainer: {
     alignItems: 'center',
   },
   bpmLabel: {
-    color: '#a8bce8',
+    color: '#ffb366',
     fontSize: 12,
     marginBottom: 4,
     fontWeight: '600',
@@ -395,11 +395,11 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(45, 74, 122, 0.6)',
+    backgroundColor: 'rgba(139, 69, 19, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 69, 0, 0.1)',
   },
   sequencerContainer: {
     flex: 1,
@@ -418,11 +418,11 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
   stepNumberActive: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#ff4500',
     borderRadius: 4,
   },
   stepNumberText: {
-    color: '#6b7d9e',
+    color: '#cc6633',
     fontSize: 10,
     fontWeight: '600',
   },
@@ -465,13 +465,13 @@ const styles = StyleSheet.create({
     marginRight: 2,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: 'rgba(74, 144, 226, 0.2)',
+    borderColor: 'rgba(255, 69, 0, 0.2)',
   },
   drumPadsContainer: {
-    backgroundColor: '#162032',
+    backgroundColor: '#2a1212',
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(74, 144, 226, 0.2)',
+    borderTopColor: 'rgba(255, 69, 0, 0.2)',
   },
   drumPadsTitle: {
     color: '#ffffff',
@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     padding: 16,
-    backgroundColor: '#1a2332',
+    backgroundColor: '#2a1a1a',
   },
   patternButton: {
     alignItems: 'center',
@@ -533,7 +533,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 12,
-    backgroundColor: '#162032',
+    backgroundColor: '#2a1212',
     gap: 8,
   },
   volumeText: {
