@@ -809,4 +809,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.3,
   },
+  cornerCrossesContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+  },
+  topLeftCross: {
+    opacity: 0.8,
+  },
+  topRightCross: {
+    opacity: 0.8,
+  },
 });
