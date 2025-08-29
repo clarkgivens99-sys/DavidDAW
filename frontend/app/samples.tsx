@@ -111,6 +111,27 @@ const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) =
   </Svg>
 );
 
+// Corner Crosses Component - White crosses in upper corners
+const CornerCrosses: React.FC = () => (
+  <View style={styles.cornerCrossesContainer}>
+    {/* Top Left Cross */}
+    <View style={styles.topLeftCross}>
+      <Svg width={32} height={32} viewBox="0 0 24 24">
+        <Line x1="12" y1="3" x2="12" y2="21" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+        <Line x1="6" y1="9" x2="18" y2="9" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+      </Svg>
+    </View>
+    
+    {/* Top Right Cross */}
+    <View style={styles.topRightCross}>
+      <Svg width={32} height={32} viewBox="0 0 24 24">
+        <Line x1="12" y1="3" x2="12" y2="21" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+        <Line x1="6" y1="9" x2="18" y2="9" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+      </Svg>
+    </View>
+  </View>
+);
+
 // Sacred Background Graphics
 const SacredBackground: React.FC<{ width: number; height: number }> = ({ width, height }) => (
   <Svg width={width} height={height} style={styles.backgroundDecoration}>
