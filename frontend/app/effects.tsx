@@ -298,17 +298,35 @@ export default function EffectsRack() {
                 {param.value.toFixed(param.unit === '%' || param.unit === ':1' ? 0 : 1)}{param.unit}
               </Text>
             </View>
-            <Slider
-              style={styles.slider}
-              minimumValue={param.min}
-              maximumValue={param.max}
-              value={param.value}
-              onValueChange={(value) => updateParameter(effect.id, index, value)}
-              minimumTrackTintColor="#ff4500"
-              maximumTrackTintColor="#4a2a2a"
-              thumbTintColor="#ffffff"
-              disabled={!effect.enabled}
-            />
+            <View style={styles.sliderContainer}>
+              <TouchableOpacity 
+                style={styles.parameterAdjustButton}
+                onPress={() => updateParameter(effect.id, index, Math.max(param.min, param.value - 1))}
+                disabled={!effect.enabled}
+              >
+                <Text style={styles.adjustButtonText}>-</Text>
+              </TouchableOpacity>
+              
+              <View style={styles.parameterBar}>
+                <View 
+                  style={[
+                    styles.parameterFill, 
+                    { 
+                      width: `${((param.value - param.min) / (param.max - param.min)) * 100}%`,
+                      backgroundColor: effect.enabled ? '#ff4500' : '#4a2a2a'
+                    }
+                  ]} 
+                />
+              </View>
+              
+              <TouchableOpacity 
+                style={styles.parameterAdjustButton}
+                onPress={() => updateParameter(effect.id, index, Math.min(param.max, param.value + 1))}
+                disabled={!effect.enabled}
+              >
+                <Text style={styles.adjustButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
       </View>
