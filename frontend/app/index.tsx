@@ -933,7 +933,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#4a2a2a',
   },
   blessingText: {
-    color: '#ffcd56',
+    color: '#ffffff',
     fontSize: 12,
     fontStyle: 'italic',
     fontWeight: '500',
