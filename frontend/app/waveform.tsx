@@ -107,7 +107,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/')}
       >
-        <Ionicons name="recording" size={20} color="#ffb366" />
+        <Ionicons name="recording" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Multitrack</Text>
       </TouchableOpacity>
       
@@ -115,7 +115,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/effects')}
       >
-        <Ionicons name="options" size={20} color="#ffb366" />
+        <Ionicons name="options" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Effects</Text>
       </TouchableOpacity>
       
@@ -123,7 +123,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/sequencer')}
       >
-        <Ionicons name="grid" size={20} color="#ffb366" />
+        <Ionicons name="grid" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Beats</Text>
       </TouchableOpacity>
       
@@ -131,7 +131,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/samples')}
       >
-        <Ionicons name="library" size={20} color="#ffb366" />
+        <Ionicons name="library" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Library</Text>
       </TouchableOpacity>
       
