@@ -167,24 +167,20 @@ export default function BeatSequencer() {
       {/* Background Musical Decorations */}
       <MusicalBackground width={400} height={800} />
       
-      {/* Header */}
+      {/* Header with Graffiti Title */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={28} color="#fff" />
-        </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <CrossIcon size={24} color="#ff4500" />
-          <Text style={styles.title}>Sacred Beats</Text>
-          <CrossIcon size={24} color="#ff4500" />
-        </View>
-        <TouchableOpacity style={styles.menuButton}>
-          <View style={styles.menuLines}>
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
+          <CrossIcon size={32} color="#ff4500" />
+          <View style={styles.titleTextContainer}>
+            <Text style={styles.mainTitle}>Gospel and Praise</Text>
+            <Text style={styles.subTitle}>D.A.W. To Worship Yahweh</Text>
           </View>
-        </TouchableOpacity>
+          <CrossIcon size={32} color="#ff4500" />
+        </View>
       </View>
+      
+      {/* Navigation Bar */}
+      <NavigationBar />
 
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
