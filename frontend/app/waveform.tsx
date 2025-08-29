@@ -270,7 +270,7 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({
               y1={0}
               x2={playheadPosition}
               y2={waveformHeight}
-              stroke="#ffcd56"
+              stroke="#00ff88"
               strokeWidth={3}
             />
           )}
