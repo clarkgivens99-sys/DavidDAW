@@ -113,6 +113,54 @@ const MusicalBackground: React.FC<{ width: number; height: number }> = ({ width,
   </Svg>
 );
 
+// Navigation Component
+const NavigationBar: React.FC = () => {
+  const router = useRouter();
+  
+  return (
+    <View style={styles.navigationBar}>
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/')}
+      >
+        <Ionicons name="recording" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Multitrack</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/effects')}
+      >
+        <Ionicons name="options" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Effects</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={[styles.navButton, styles.activeNavButton]}
+      >
+        <Ionicons name="grid" size={20} color="#ffffff" />
+        <Text style={styles.navButtonText}>Beats</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/samples')}
+      >
+        <Ionicons name="library" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Library</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/waveform')}
+      >
+        <Ionicons name="pulse" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Waveform</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 export default function BeatSequencer() {
   const router = useRouter();
   const [pattern, setPattern] = useState<SequenceStep[]>(initialPattern);
