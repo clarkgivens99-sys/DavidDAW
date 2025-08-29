@@ -551,6 +551,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     zIndex: 5,
+    backgroundColor: 'transparent', // Ensure it's not hidden
+    minHeight: 400, // Ensure minimum height
   },
   effectCard: {
     backgroundColor: 'rgba(42, 26, 26, 0.9)',
