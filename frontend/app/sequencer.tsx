@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,55 +6,135 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
-  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Svg, { Path, Circle, Line, Defs, LinearGradient, Stop } from 'react-native-svg';
-
-const { width: screenWidth } = Dimensions.get('window');
+import Svg, { Path, Line, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 interface DrumPad {
   id: string;
   name: string;
+  sacredName: string;
   sound: string;
   color: string;
-  volume: number;
-  sacredName: string; // Religious themed names
+  isActive: boolean;
+  blessing: string;
 }
 
-interface SequenceStep {
-  kick: boolean;
-  snare: boolean;
-  hihat: boolean;
-  openhat: boolean;
-  crash: boolean;
-  ride: boolean;
-  clap: boolean;
-  perc: boolean;
+interface Pattern {
+  [padId: string]: boolean[];
 }
 
 const drumPads: DrumPad[] = [
-  { id: 'kick', name: 'Foundation', sacredName: 'Rock of Ages', sound: 'kick_sample', color: '#ef4444', volume: 1.0 },
-  { id: 'snare', name: 'Truth', sacredName: 'Voice of Truth', sound: 'snare_sample', color: '#f59e0b', volume: 0.8 },
-  { id: 'hihat', name: 'Grace', sacredName: 'Amazing Grace', sound: 'hihat_sample', color: '#eab308', volume: 0.6 },
-  { id: 'openhat', name: 'Spirit', sacredName: 'Holy Spirit', sound: 'openhat_sample', color: '#22c55e', volume: 0.7 },
-  { id: 'crash', name: 'Glory', sacredName: 'Glory Hallelujah', sound: 'crash_sample', color: '#10b981', volume: 0.9 },
-  { id: 'ride', name: 'Peace', sacredName: 'Prince of Peace', sound: 'ride_sample', color: '#06b6d4', volume: 0.7 },
-  { id: 'clap', name: 'Praise', sacredName: 'Clap Your Hands', sound: 'clap_sample', color: '#8b5cf6', volume: 0.8 },
-  { id: 'perc', name: 'Joy', sacredName: 'Joy to World', sound: 'perc_sample', color: '#ec4899', volume: 0.6 },
+  { 
+    id: 'kick', 
+    name: 'Kick', 
+    sacredName: 'Rock of Ages',
+    sound: 'kick.wav', 
+    color: '#ff4444', 
+    isActive: false,
+    blessing: 'The foundation upon which we build'
+  },
+  { 
+    id: 'snare', 
+    name: 'Snare', 
+    sacredName: 'Voice of Truth',
+    sound: 'snare.wav', 
+    color: '#44ff44', 
+    isActive: false,
+    blessing: 'The sharp call to righteousness'
+  },
+  { 
+    id: 'hihat', 
+    name: 'Hi-Hat', 
+    sacredName: 'Gentle Whisper',
+    sound: 'hihat.wav', 
+    color: '#4444ff', 
+    isActive: false,
+    blessing: 'The soft guidance of the Spirit'
+  },
+  { 
+    id: 'openhat', 
+    name: 'Open Hat', 
+    sacredName: 'Joyful Noise',
+    sound: 'openhat.wav', 
+    color: '#ffff44', 
+    isActive: false,
+    blessing: 'The celebration of salvation'
+  },
+  { 
+    id: 'crash', 
+    name: 'Crash', 
+    sacredName: 'Thunder of Glory',
+    sound: 'crash.wav', 
+    color: '#ff44ff', 
+    isActive: false,
+    blessing: 'The mighty sound of His presence'
+  },
+  { 
+    id: 'ride', 
+    name: 'Ride', 
+    sacredName: 'Eternal Rhythm',
+    sound: 'ride.wav', 
+    color: '#44ffff', 
+    isActive: false,
+    blessing: 'The steady beat of forever'
+  },
+  { 
+    id: 'tom1', 
+    name: 'High Tom', 
+    sacredName: 'Heavenly Call',
+    sound: 'tom1.wav', 
+    color: '#ff8844', 
+    isActive: false,
+    blessing: 'The high calling of praise'
+  },
+  { 
+    id: 'tom2', 
+    name: 'Low Tom', 
+    sacredName: 'Deep Faith',
+    sound: 'tom2.wav', 
+    color: '#8844ff', 
+    isActive: false,
+    blessing: 'The depth of our devotion'
+  },
+  { 
+    id: 'clap', 
+    name: 'Clap', 
+    sacredName: 'Hands of Praise',
+    sound: 'clap.wav', 
+    color: '#44ff88', 
+    isActive: false,
+    blessing: 'Clap your hands all you peoples'
+  },
+  { 
+    id: 'perc', 
+    name: 'Percussion', 
+    sacredName: 'Sacred Rhythm',
+    sound: 'perc.wav', 
+    color: '#ff4488', 
+    isActive: false,
+    blessing: 'The heartbeat of worship'
+  },
+  { 
+    id: 'shaker', 
+    name: 'Shaker', 
+    sacredName: 'Spirit Shake',
+    sound: 'shaker.wav', 
+    color: '#88ff44', 
+    isActive: false,
+    blessing: 'Shake with holy fire'
+  },
+  { 
+    id: 'cowbell', 
+    name: 'Cowbell', 
+    sacredName: 'Divine Bell',
+    sound: 'cowbell.wav', 
+    color: '#4488ff', 
+    isActive: false,
+    blessing: 'Ring out the good news'
+  }
 ];
-
-const initialPattern: SequenceStep[] = Array(16).fill(null).map(() => ({
-  kick: false,
-  snare: false,
-  hihat: false,
-  openhat: false,
-  crash: false,
-  ride: false,
-  clap: false,
-  perc: false,
-}));
 
 // Cross SVG Component - Standard Christian Cross
 const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) => (
@@ -82,34 +162,54 @@ const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) =
   </Svg>
 );
 
-// Musical Note Background
+// Corner Crosses Component - White crosses in upper corners
+const CornerCrosses: React.FC = () => (
+  <View style={styles.cornerCrossesContainer}>
+    {/* Top Left Cross */}
+    <View style={styles.topLeftCross}>
+      <Svg width={32} height={32} viewBox="0 0 24 24">
+        <Line x1="12" y1="3" x2="12" y2="21" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+        <Line x1="6" y1="9" x2="18" y2="9" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+      </Svg>
+    </View>
+    
+    {/* Top Right Cross */}
+    <View style={styles.topRightCross}>
+      <Svg width={32} height={32} viewBox="0 0 24 24">
+        <Line x1="12" y1="3" x2="12" y2="21" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+        <Line x1="6" y1="9" x2="18" y2="9" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+      </Svg>
+    </View>
+  </View>
+);
+
+// Sacred Background Graphics
 const MusicalBackground: React.FC<{ width: number; height: number }> = ({ width, height }) => (
   <Svg width={width} height={height} style={styles.backgroundDecoration}>
     <Defs>
-      <LinearGradient id="noteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <Stop offset="0%" stopColor="#ff4500" stopOpacity="0.2" />
-        <Stop offset="100%" stopColor="#ffcd56" stopOpacity="0.1" />
+      <LinearGradient id="musicalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="#ff4500" stopOpacity="0.1" />
+        <Stop offset="50%" stopColor="#ffcd56" stopOpacity="0.05" />
+        <Stop offset="100%" stopColor="#ff4500" stopOpacity="0.1" />
       </LinearGradient>
     </Defs>
-    {/* Treble Clef */}
-    <Path
-      d="M80 120 Q85 100 90 120 Q95 140 85 150 Q80 160 85 170"
-      stroke="url(#noteGradient)"
-      strokeWidth="3"
-      fill="none"
-    />
-    {/* Staff lines */}
-    <Line x1="30" y1="140" x2="370" y2="140" stroke="url(#noteGradient)" strokeWidth="1" />
-    <Line x1="30" y1="150" x2="370" y2="150" stroke="url(#noteGradient)" strokeWidth="1" />
-    <Line x1="30" y1="160" x2="370" y2="160" stroke="url(#noteGradient)" strokeWidth="1" />
-    <Line x1="30" y1="170" x2="370" y2="170" stroke="url(#noteGradient)" strokeWidth="1" />
-    <Line x1="30" y1="180" x2="370" y2="180" stroke="url(#noteGradient)" strokeWidth="1" />
     
-    {/* Cross in corner */}
-    <Path
-      d="M320 60L320 40L324 40L324 60L340 60L340 64L324 64L324 80L320 80L320 64L304 64L304 60L320 60Z"
-      fill="url(#noteGradient)"
-    />
+    {/* Large Cross */}
+    <Line x1="200" y1="50" x2="200" y2="200" stroke="url(#musicalGradient)" strokeWidth="4" />
+    <Line x1="150" y1="100" x2="250" y2="100" stroke="url(#musicalGradient)" strokeWidth="4" />
+    
+    {/* Musical notes */}
+    <Circle cx="80" cy="300" r="4" fill="url(#musicalGradient)" />
+    <Line x1="84" y1="300" x2="84" y2="280" stroke="#ff4500" strokeWidth="2" opacity="0.2" />
+    <Path d="M86 278L86 282L90 280L90 276L86 278Z" fill="url(#musicalGradient)" />
+    
+    <Circle cx="320" cy="150" r="3" fill="url(#musicalGradient)" />
+    <Line x1="323" y1="150" x2="323" y2="135" stroke="#ff4500" strokeWidth="1.5" opacity="0.2" />
+    
+    {/* Drum pattern visualization */}
+    <Circle cx="150" cy="350" r="12" fill="none" stroke="url(#musicalGradient)" strokeWidth="2" />
+    <Circle cx="180" cy="350" r="8" fill="none" stroke="url(#musicalGradient)" strokeWidth="1.5" />
+    <Circle cx="210" cy="350" r="6" fill="none" stroke="url(#musicalGradient)" strokeWidth="1" />
   </Svg>
 );
 
@@ -123,7 +223,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/')}
       >
-        <Ionicons name="recording" size={20} color="#ffb366" />
+        <Ionicons name="recording" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Multitrack</Text>
       </TouchableOpacity>
       
@@ -131,7 +231,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/effects')}
       >
-        <Ionicons name="options" size={20} color="#ffb366" />
+        <Ionicons name="options" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Effects</Text>
       </TouchableOpacity>
       
@@ -146,7 +246,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/samples')}
       >
-        <Ionicons name="library" size={20} color="#ffb366" />
+        <Ionicons name="library" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Library</Text>
       </TouchableOpacity>
       
@@ -154,7 +254,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/waveform')}
       >
-        <Ionicons name="pulse" size={20} color="#ffb366" />
+        <Ionicons name="pulse" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Waveform</Text>
       </TouchableOpacity>
     </View>
@@ -163,56 +263,58 @@ const NavigationBar: React.FC = () => {
 
 export default function BeatSequencer() {
   const router = useRouter();
-  const [pattern, setPattern] = useState<SequenceStep[]>(initialPattern);
+  const [drumPadsState, setDrumPadsState] = useState(drumPads);
+  const [pattern, setPattern] = useState<Pattern>({});
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [bpm, setBpm] = useState(120);
-  const [selectedDrum, setSelectedDrum] = useState<string>('kick');
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [selectedPad, setSelectedPad] = useState<string | null>(null);
 
-  const stepDuration = (60 / bpm / 4) * 1000;
+  const steps = 16;
 
-  useEffect(() => {
-    if (isPlaying) {
-      intervalRef.current = setInterval(() => {
-        setCurrentStep(prev => (prev + 1) % 16);
-      }, stepDuration);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    }
+  // Initialize pattern
+  React.useEffect(() => {
+    const initialPattern: Pattern = {};
+    drumPads.forEach(pad => {
+      initialPattern[pad.id] = new Array(steps).fill(false);
+    });
+    setPattern(initialPattern);
+  }, []);
 
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isPlaying, stepDuration]);
-
-  const toggleStep = (stepIndex: number, drumId: string) => {
-    setPattern(prev => prev.map((step, index) => 
-      index === stepIndex 
-        ? { ...step, [drumId]: !step[drumId as keyof SequenceStep] }
-        : step
-    ));
+  const toggleStep = (padId: string, stepIndex: number) => {
+    setPattern(prev => ({
+      ...prev,
+      [padId]: prev[padId]?.map((active, index) => 
+        index === stepIndex ? !active : active
+      ) || []
+    }));
   };
 
-  const getStepColor = (stepIndex: number, drumId: string) => {
-    const drum = drumPads.find(d => d.id === drumId);
-    const isActive = pattern[stepIndex][drumId as keyof SequenceStep];
-    const isCurrent = stepIndex === currentStep && isPlaying;
-    
-    if (isCurrent && isActive) return drum?.color || '#ffffff';
-    if (isCurrent) return '#ff4500';
-    if (isActive) return drum?.color || '#cc6633';
-    return 'rgba(139, 69, 19, 0.3)';
-  };
+  const DrumPadComponent = ({ pad }: { pad: DrumPad }) => (
+    <TouchableOpacity
+      style={[
+        styles.drumPad,
+        { backgroundColor: pad.color + '33' },
+        { borderColor: pad.color },
+        selectedPad === pad.id && styles.drumPadSelected,
+        pad.isActive && styles.drumPadActive
+      ]}
+      onPress={() => setSelectedPad(pad.id)}
+    >
+      <View style={styles.padHeader}>
+        <CrossIcon size={12} color="#ff4500" />
+        <Text style={styles.padName}>{pad.sacredName}</Text>
+      </View>
+      <Text style={styles.padBlessing}>"{pad.blessing}"</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Background Musical Decorations */}
+      {/* Corner Crosses */}
+      <CornerCrosses />
+      
+      {/* Background Graphics */}
       <MusicalBackground width={400} height={800} />
       
       {/* Header with Graffiti Title */}
@@ -233,115 +335,118 @@ export default function BeatSequencer() {
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: `${((currentStep + 1) / 16) * 100}%` }]} />
+          <View style={[styles.progressFill, { width: '75%' }]} />
         </View>
       </View>
 
-      {/* Transport Controls */}
-      <View style={styles.transportContainer}>
+      {/* Sacred Controls */}
+      <View style={styles.controlsContainer}>
+        <View style={styles.bpmContainer}>
+          <CrossIcon size={16} color="#ff4500" />
+          <Text style={styles.bpmLabel}>Sacred BPM</Text>
+          <Text style={styles.bpmValue}>{bpm}</Text>
+        </View>
+        
         <TouchableOpacity
-          style={[styles.transportButton, isPlaying && styles.transportActive]}
+          style={[styles.playButton, isPlaying && styles.playButtonActive]}
           onPress={() => setIsPlaying(!isPlaying)}
         >
-          <View style={styles.transportIcon}>
-            <Ionicons name={isPlaying ? "pause" : "play"} size={20} color="#ff4500" />
-          </View>
-          <Text style={styles.transportLabel}>{isPlaying ? 'Pause' : 'Play'}</Text>
+          <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="#fff" />
         </TouchableOpacity>
         
-        <View style={styles.bpmContainer}>
-          <CrossIcon size={20} color="#ffcd56" />
-          <Text style={styles.bpmValue}>{bpm}</Text>
-          <Text style={styles.bpmLabel}>BPM</Text>
-        </View>
-        
-        <TouchableOpacity
-          style={styles.transportButton}
-          onPress={() => {
-            setIsPlaying(false);
-            setCurrentStep(0);
-          }}
-        >
-          <View style={styles.transportIcon}>
-            <View style={styles.stopButton} />
-          </View>
-          <Text style={styles.transportLabel}>Stop</Text>
+        <TouchableOpacity style={styles.resetButton}>
+          <CrossIcon size={14} color="#ff4500" />
+          <Ionicons name="refresh" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      {/* Step Sequencer Grid */}
-      <ScrollView style={styles.sequencerContainer}>
-        <View style={styles.stepNumbers}>
-          {Array(16).fill(null).map((_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.stepNumber,
-                currentStep === index && isPlaying && styles.stepNumberActive
-              ]}
-            >
-              <Text style={[
-                styles.stepNumberText,
-                currentStep === index && isPlaying && styles.stepNumberTextActive
-              ]}>
-                {index + 1}
-              </Text>
-            </View>
-          ))}
+      {/* Pattern Grid */}
+      <View style={styles.patternContainer}>
+        <View style={styles.stepsHeader}>
+          <CrossIcon size={16} color="#ff4500" />
+          <Text style={styles.patternTitle}>Sacred Beat Pattern</Text>
+          <CrossIcon size={16} color="#ff4500" />
         </View>
-
-        {drumPads.map(drum => (
-          <View key={drum.id} style={styles.sequencerRow}>
-            <View style={styles.drumLabelContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.drumLabel,
-                  { backgroundColor: drum.color },
-                  selectedDrum === drum.id && styles.drumLabelSelected
-                ]}
-                onPress={() => setSelectedDrum(drum.id)}
-              >
-                <Text style={styles.drumLabelText}>{drum.name}</Text>
-              </TouchableOpacity>
-              <Text style={styles.sacredName}>{drum.sacredName}</Text>
-            </View>
-            
-            <View style={styles.stepsRow}>
-              {Array(16).fill(null).map((_, stepIndex) => (
-                <TouchableOpacity
-                  key={stepIndex}
+        
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.patternGrid}>
+            {/* Step indicators */}
+            <View style={styles.stepIndicators}>
+              {Array.from({ length: steps }, (_, index) => (
+                <View
+                  key={index}
                   style={[
-                    styles.stepButton,
-                    { backgroundColor: getStepColor(stepIndex, drum.id) }
+                    styles.stepIndicator,
+                    currentStep === index && styles.currentStepIndicator
                   ]}
-                  onPress={() => toggleStep(stepIndex, drum.id)}
                 >
-                  {pattern[stepIndex][drum.id as keyof SequenceStep] && (
-                    <CrossIcon size={12} color="#ffffff" />
-                  )}
-                </TouchableOpacity>
+                  <Text style={styles.stepNumber}>{index + 1}</Text>
+                </View>
               ))}
             </View>
+            
+            {/* Pattern rows */}
+            {drumPadsState.map(pad => (
+              <View key={pad.id} style={styles.patternRow}>
+                <View style={styles.padLabel}>
+                  <CrossIcon size={8} color={pad.color} />
+                  <Text style={[styles.padLabelText, { color: pad.color }]}>
+                    {pad.sacredName}
+                  </Text>
+                </View>
+                <View style={styles.stepsRow}>
+                  {Array.from({ length: steps }, (_, stepIndex) => (
+                    <TouchableOpacity
+                      key={stepIndex}
+                      style={[
+                        styles.stepButton,
+                        pattern[pad.id]?.[stepIndex] && { backgroundColor: pad.color },
+                        (stepIndex + 1) % 4 === 1 && styles.beatOneStep
+                      ]}
+                      onPress={() => toggleStep(pad.id, stepIndex)}
+                    />
+                  ))}
+                </View>
+              </View>
+            ))}
           </View>
-        ))}
-      </ScrollView>
+        </ScrollView>
+      </View>
 
-      {/* Divine Controls Footer */}
+      {/* Drum Pads Grid */}
+      <View style={styles.drumPadsContainer}>
+        <View style={styles.padsHeader}>
+          <CrossIcon size={16} color="#ff4500" />
+          <Text style={styles.padsTitle}>Sacred Drum Pads</Text>
+          <CrossIcon size={16} color="#ff4500" />
+        </View>
+        
+        <View style={styles.drumPadsGrid}>
+          {drumPadsState.map(pad => (
+            <DrumPadComponent key={pad.id} pad={pad} />
+          ))}
+        </View>
+      </View>
+
+      {/* Sacred Footer */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.footerButton}>
           <CrossIcon size={16} color="#ff4500" />
-          <Text style={styles.footerButtonText}>Bless Pattern</Text>
+          <Ionicons name="save" size={20} color="#fff" />
+          <Text style={styles.footerButtonText}>Save Pattern</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.footerButton}>
-          <Ionicons name="refresh" size={16} color="#ffffff" />
-          <Text style={styles.footerButtonText}>Sanctify</Text>
+          <CrossIcon size={16} color="#ff4500" />
+          <Ionicons name="download" size={20} color="#fff" />
+          <Text style={styles.footerButtonText}>Export Beats</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.footerButton}>
-          <Ionicons name="heart" size={16} color="#dc143c" />
-          <Text style={styles.footerButtonText}>Sacred Heart</Text>
-        </TouchableOpacity>
+      </View>
+
+      <View style={styles.sacredFooter}>
+        <CrossIcon size={24} color="#ffffff" />
+        <Text style={styles.blessingText}>"Praise him with tambourine and dance"</Text>
+        <CrossIcon size={24} color="#ffffff" />
       </View>
     </SafeAreaView>
   );
@@ -360,176 +465,29 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 0,
   },
+  cornerCrossesContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+  },
+  topLeftCross: {
+    opacity: 0.8,
+  },
+  topRightCross: {
+    opacity: 0.8,
+  },
   header: {
     paddingHorizontal: 20,
     paddingVertical: 16,
     paddingTop: 20,
     backgroundColor: '#2a1a1a',
     zIndex: 10,
-  },
-
-  progressContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#2a1a1a',
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: '#4a2a2a',
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#ff4500',
-    borderRadius: 2,
-  },
-  transportContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    padding: 20,
-    backgroundColor: '#2a1a1a',
-    borderBottomWidth: 1,
-    borderBottomColor: '#4a2a2a',
-    zIndex: 5,
-  },
-  transportButton: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  transportIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'rgba(74, 42, 42, 0.8)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#ff4500',
-  },
-  transportActive: {
-    opacity: 1,
-  },
-  transportLabel: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  bpmContainer: {
-    alignItems: 'center',
-    gap: 4,
-  },
-  bpmValue: {
-    color: '#ffffff',
-    fontSize: 24,
-    fontWeight: '700',
-  },
-  bpmLabel: {
-    color: '#ffb366',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  stopButton: {
-    width: 16,
-    height: 4,
-    backgroundColor: '#ff4500',
-    borderRadius: 2,
-  },
-  sequencerContainer: {
-    flex: 1,
-    padding: 16,
-    zIndex: 5,
-  },
-  stepNumbers: {
-    flexDirection: 'row',
-    marginBottom: 16,
-    paddingLeft: 120,
-    gap: 2,
-  },
-  stepNumber: {
-    width: 28,
-    height: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-  },
-  stepNumberActive: {
-    backgroundColor: '#ff4500',
-  },
-  stepNumberText: {
-    color: '#cc6633',
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  stepNumberTextActive: {
-    color: '#ffffff',
-    fontWeight: '700',
-  },
-  sequencerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  drumLabelContainer: {
-    width: 110,
-    marginRight: 8,
-  },
-  drumLabel: {
-    height: 32,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  drumLabelSelected: {
-    borderWidth: 2,
-    borderColor: '#ffffff',
-  },
-  drumLabelText: {
-    color: '#ffffff',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  sacredName: {
-    color: '#ffb366',
-    fontSize: 9,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  stepsRow: {
-    flexDirection: 'row',
-    flex: 1,
-    gap: 2,
-  },
-  stepButton: {
-    width: 28,
-    height: 32,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 69, 0, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    padding: 16,
-    backgroundColor: '#2a1a1a',
-    borderTopWidth: 1,
-    borderTopColor: '#4a2a2a',
-  },
-  footerButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    padding: 8,
-  },
-  footerButtonText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
   },
   titleContainer: {
     flexDirection: 'row',
@@ -589,6 +547,248 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   inactiveNavText: {
-    color: '#ffb366',
+    color: '#ffffff',
+  },
+  progressContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#2a1a1a',
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: '#4a2a2a',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#ff4500',
+    borderRadius: 2,
+  },
+  controlsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: '#2a1212',
+    zIndex: 5,
+  },
+  bpmContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  bpmLabel: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  bpmValue: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+    minWidth: 40,
+  },
+  playButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(139, 69, 19, 0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 69, 0, 0.3)',
+  },
+  playButtonActive: {
+    backgroundColor: '#ff4500',
+    shadowColor: '#ff4500',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  resetButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    padding: 12,
+  },
+  patternContainer: {
+    backgroundColor: '#2a1a1a',
+    padding: 16,
+    zIndex: 5,
+  },
+  stepsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+  patternTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  patternGrid: {
+    gap: 8,
+  },
+  stepIndicators: {
+    flexDirection: 'row',
+    gap: 2,
+    marginLeft: 80,
+    marginBottom: 8,
+  },
+  stepIndicator: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(139, 69, 19, 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 69, 0, 0.2)',
+  },
+  currentStepIndicator: {
+    backgroundColor: '#ff4500',
+    borderColor: '#ffffff',
+  },
+  stepNumber: {
+    color: '#ffffff',
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  patternRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  padLabel: {
+    width: 76,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  padLabelText: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  stepsRow: {
+    flexDirection: 'row',
+    gap: 2,
+  },
+  stepButton: {
+    width: 24,
+    height: 24,
+    borderRadius: 4,
+    backgroundColor: 'rgba(139, 69, 19, 0.3)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 69, 0, 0.2)',
+  },
+  beatOneStep: {
+    borderColor: '#ffffff',
+    borderWidth: 2,
+  },
+  drumPadsContainer: {
+    flex: 1,
+    padding: 16,
+    zIndex: 5,
+  },
+  padsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+  padsTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  drumPadsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    justifyContent: 'space-between',
+  },
+  drumPad: {
+    width: '48%',
+    aspectRatio: 1.5,
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  drumPadSelected: {
+    borderWidth: 3,
+    borderColor: '#ffffff',
+  },
+  drumPadActive: {
+    shadowColor: '#ff4500',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  padHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 6,
+  },
+  padName: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  padBlessing: {
+    color: '#ffffff',
+    fontSize: 9,
+    textAlign: 'center',
+    fontStyle: 'italic',
+    opacity: 0.8,
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    padding: 16,
+    backgroundColor: '#2a1212',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 69, 0, 0.2)',
+    zIndex: 5,
+  },
+  footerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  footerButtonText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  sacredFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#2a1a1a',
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#4a2a2a',
+    zIndex: 5,
+  },
+  blessingText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontStyle: 'italic',
+    fontWeight: '500',
+    letterSpacing: 0.3,
   },
 });
