@@ -338,6 +338,7 @@ const TransportControls: React.FC = () => {
 // Main DAW Component
 export default function DAWApp() {
   const { tracks, addTrack } = useDAWStore();
+  const router = useRouter();
 
   useEffect(() => {
     // Initialize audio session
@@ -356,8 +357,23 @@ export default function DAWApp() {
       <View style={styles.header}>
         <Text style={styles.appTitle}>ProDAW Studio</Text>
         <View style={styles.headerButtons}>
-          <TouchableOpacity style={styles.headerButton}>
-            <Ionicons name="save" size={20} color="#fff" />
+          <TouchableOpacity 
+            style={styles.headerButton}
+            onPress={() => router.push('/waveform')}
+          >
+            <Ionicons name="pulse" size={20} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.headerButton}
+            onPress={() => router.push('/effects')}
+          >
+            <Ionicons name="options" size={20} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.headerButton}
+            onPress={() => router.push('/sequencer')}
+          >
+            <Ionicons name="grid" size={20} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
             <Ionicons name="settings" size={20} color="#fff" />
