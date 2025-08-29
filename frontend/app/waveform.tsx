@@ -335,8 +335,8 @@ export default function WaveformEditor() {
         <View style={styles.titleContainer}>
           <CrossIcon size={32} color="#ff4500" />
           <View style={styles.titleTextContainer}>
-            <Text style={styles.mainTitle}>Gospel and Praise</Text>
-            <Text style={styles.subTitle}>D.A.W. To Worship Yahweh</Text>
+            <Text style={styles.mainTitle}>The David D.A.W.</Text>
+            <Text style={styles.subTitle}>for Chasing Away the Evil Spirit</Text>
           </View>
           <CrossIcon size={32} color="#ff4500" />
         </View>
