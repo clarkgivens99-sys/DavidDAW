@@ -35,14 +35,14 @@ interface SequenceStep {
 }
 
 const drumPads: DrumPad[] = [
-  { id: 'kick', name: 'Kick', sound: 'kick_sample', color: '#ff4444', volume: 1.0 },
-  { id: 'snare', name: 'Snare', sound: 'snare_sample', color: '#ff8844', volume: 0.8 },
-  { id: 'hihat', name: 'Hi-Hat', sound: 'hihat_sample', color: '#ffff44', volume: 0.6 },
-  { id: 'openhat', name: 'Open Hat', sound: 'openhat_sample', color: '#88ff44', volume: 0.7 },
-  { id: 'crash', name: 'Crash', sound: 'crash_sample', color: '#44ff88', volume: 0.9 },
-  { id: 'ride', name: 'Ride', sound: 'ride_sample', color: '#44ffff', volume: 0.7 },
-  { id: 'clap', name: 'Clap', sound: 'clap_sample', color: '#8844ff', volume: 0.8 },
-  { id: 'perc', name: 'Perc', sound: 'perc_sample', color: '#ff44ff', volume: 0.6 },
+  { id: 'kick', name: 'Kick', sound: 'kick_sample', color: '#ef4444', volume: 1.0 },
+  { id: 'snare', name: 'Snare', sound: 'snare_sample', color: '#f59e0b', volume: 0.8 },
+  { id: 'hihat', name: 'Hi-Hat', sound: 'hihat_sample', color: '#eab308', volume: 0.6 },
+  { id: 'openhat', name: 'Open Hat', sound: 'openhat_sample', color: '#22c55e', volume: 0.7 },
+  { id: 'crash', name: 'Crash', sound: 'crash_sample', color: '#10b981', volume: 0.9 },
+  { id: 'ride', name: 'Ride', sound: 'ride_sample', color: '#06b6d4', volume: 0.7 },
+  { id: 'clap', name: 'Clap', sound: 'clap_sample', color: '#8b5cf6', volume: 0.8 },
+  { id: 'perc', name: 'Perc', sound: 'perc_sample', color: '#ec4899', volume: 0.6 },
 ];
 
 const initialPattern: SequenceStep[] = Array(16).fill(null).map(() => ({
@@ -135,10 +135,10 @@ export default function BeatSequencer() {
     const isActive = pattern[stepIndex][drumId as keyof SequenceStep];
     const isCurrent = stepIndex === currentStep && isPlaying;
     
-    if (isCurrent && isActive) return drum?.color || '#fff';
-    if (isCurrent) return '#fff';
-    if (isActive) return drum?.color || '#666';
-    return '#333';
+    if (isCurrent && isActive) return drum?.color || '#ffffff';
+    if (isCurrent) return '#4a90e2';
+    if (isActive) return drum?.color || '#6b7d9e';
+    return 'rgba(45, 74, 122, 0.3)';
   };
 
   return (
@@ -271,29 +271,29 @@ export default function BeatSequencer() {
       {/* Pattern Controls */}
       <View style={styles.patternControls}>
         <TouchableOpacity style={styles.patternButton} onPress={clearPattern}>
-          <Ionicons name="trash" size={16} color="#ff4444" />
-          <Text style={[styles.patternButtonText, { color: '#ff4444' }]}>Clear</Text>
+          <Ionicons name="trash" size={16} color="#ef4444" />
+          <Text style={[styles.patternButtonText, { color: '#ef4444' }]}>Clear</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.patternButton} onPress={randomizePattern}>
-          <Ionicons name="shuffle" size={16} color="#fff" />
+          <Ionicons name="shuffle" size={16} color="#ffffff" />
           <Text style={styles.patternButtonText}>Random</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.patternButton}>
-          <Ionicons name="copy" size={16} color="#fff" />
+          <Ionicons name="copy" size={16} color="#ffffff" />
           <Text style={styles.patternButtonText}>Copy</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.patternButton}>
-          <Ionicons name="clipboard" size={16} color="#fff" />
+          <Ionicons name="clipboard" size={16} color="#ffffff" />
           <Text style={styles.patternButtonText}>Paste</Text>
         </TouchableOpacity>
       </View>
 
       {/* Volume Control */}
       <View style={styles.volumeContainer}>
-        <Ionicons name="volume-medium" size={20} color="#fff" />
+        <Ionicons name="volume-medium" size={20} color="#ffffff" />
         <Text style={styles.volumeText}>Master: {Math.round(volume * 100)}%</Text>
       </View>
     </SafeAreaView>
@@ -303,73 +303,88 @@ export default function BeatSequencer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0f1419',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: '#2a2a2a',
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    paddingTop: 20,
+    backgroundColor: '#1e2a4a',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   backButton: {
-    padding: 8,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
   },
   title: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   headerButtons: {
     flexDirection: 'row',
     gap: 8,
   },
   headerButton: {
-    padding: 8,
-    backgroundColor: '#333',
-    borderRadius: 6,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
   },
   transportContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
-    backgroundColor: '#2a2a2a',
-    gap: 16,
+    padding: 20,
+    backgroundColor: '#162032',
+    gap: 20,
   },
   playButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#007AFF',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#4a90e2',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#4a90e2',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
   },
   playButtonActive: {
-    backgroundColor: '#00ff00',
+    backgroundColor: '#10b981',
   },
   stopButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#333',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(45, 74, 122, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   bpmContainer: {
     alignItems: 'center',
   },
   bpmLabel: {
-    color: '#ccc',
+    color: '#a8bce8',
     fontSize: 12,
     marginBottom: 4,
+    fontWeight: '600',
   },
   bpmValue: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '700',
     marginBottom: 8,
   },
   bpmControls: {
@@ -380,9 +395,11 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#333',
+    backgroundColor: 'rgba(45, 74, 122, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   sequencerContainer: {
     flex: 1,
@@ -401,17 +418,17 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
   stepNumberActive: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#4a90e2',
     borderRadius: 4,
   },
   stepNumberText: {
-    color: '#666',
+    color: '#6b7d9e',
     fontSize: 10,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   stepNumberTextActive: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: '#ffffff',
+    fontWeight: '700',
   },
   sequencerRow: {
     flexDirection: 'row',
@@ -421,19 +438,22 @@ const styles = StyleSheet.create({
   drumLabel: {
     width: 70,
     height: 32,
-    borderRadius: 6,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
   },
   drumLabelSelected: {
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: '#ffffff',
   },
   drumLabelText: {
-    color: '#1a1a1a',
+    color: '#ffffff',
     fontSize: 11,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   stepsRow: {
     flexDirection: 'row',
@@ -442,49 +462,61 @@ const styles = StyleSheet.create({
   stepButton: {
     width: 30,
     height: 32,
-    backgroundColor: '#333',
     marginRight: 2,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#555',
+    borderColor: 'rgba(74, 144, 226, 0.2)',
   },
   drumPadsContainer: {
-    backgroundColor: '#2a2a2a',
-    padding: 16,
+    backgroundColor: '#162032',
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(74, 144, 226, 0.2)',
   },
   drumPadsTitle: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
+    fontWeight: '700',
+    marginBottom: 16,
+    letterSpacing: 0.3,
   },
   drumPadsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 12,
   },
   drumPad: {
-    width: (screenWidth - 64) / 4 - 6,
-    height: 60,
-    borderRadius: 8,
+    width: (screenWidth - 88) / 4,
+    height: 64,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   drumPadSelected: {
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: '#ffffff',
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
   },
   drumPadText: {
-    color: '#1a1a1a',
+    color: '#ffffff',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   patternControls: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     padding: 16,
-    backgroundColor: '#333',
+    backgroundColor: '#1a2332',
   },
   patternButton: {
     alignItems: 'center',
@@ -492,21 +524,21 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   patternButtonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   volumeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 12,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#162032',
     gap: 8,
   },
   volumeText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });
