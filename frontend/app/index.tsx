@@ -355,7 +355,7 @@ export default function DAWApp() {
       
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.appTitle}>ProDAW Studio</Text>
+        <Text style={styles.appTitle}>The Messenger's D.A.W.</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity 
             style={styles.headerButton}
