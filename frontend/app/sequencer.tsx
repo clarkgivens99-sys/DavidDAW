@@ -361,10 +361,8 @@ const styles = StyleSheet.create({
     zIndex: 0,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     paddingTop: 20,
     backgroundColor: '#2a1a1a',
     zIndex: 10,
