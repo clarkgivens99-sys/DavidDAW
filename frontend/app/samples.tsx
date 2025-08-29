@@ -326,6 +326,9 @@ export default function SampleLibrary() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Corner Crosses */}
+      <CornerCrosses />
+      
       <SacredBackground width={400} height={800} />
       
       {/* Header with Graffiti Title */}
