@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Svg, { Path, Line, Rect } from 'react-native-svg';
+import Svg, { Path, Line, Rect, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -30,6 +30,101 @@ interface WaveformViewerProps {
   onZoom: (scale: number) => void;
   zoomScale: number;
 }
+
+// Cross SVG Component - Standard Christian Cross
+const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Defs>
+      <LinearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor={color} stopOpacity="1" />
+        <Stop offset="50%" stopColor="#ffcd56" stopOpacity="0.9" />
+        <Stop offset="100%" stopColor={color} stopOpacity="0.8" />
+      </LinearGradient>
+    </Defs>
+    {/* Standard Christian Cross: one vertical line with one horizontal line at 2/3 height */}
+    <Line
+      x1="12" y1="3" x2="12" y2="21"
+      stroke="url(#crossGradient)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+    <Line
+      x1="6" y1="9" x2="18" y2="9"
+      stroke="url(#crossGradient)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+  </Svg>
+);
+
+// Sacred Background Graphics
+const SacredBackground: React.FC<{ width: number; height: number }> = ({ width, height }) => (
+  <Svg width={width} height={height} style={styles.backgroundDecoration}>
+    <Defs>
+      <LinearGradient id="sacredGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="#ff4500" stopOpacity="0.1" />
+        <Stop offset="50%" stopColor="#ffcd56" stopOpacity="0.05" />
+        <Stop offset="100%" stopColor="#ff4500" stopOpacity="0.1" />
+      </LinearGradient>
+    </Defs>
+    
+    {/* Large Cross */}
+    <Line x1="200" y1="50" x2="200" y2="200" stroke="url(#sacredGradient)" strokeWidth="4" />
+    <Line x1="150" y1="100" x2="250" y2="100" stroke="url(#sacredGradient)" strokeWidth="4" />
+    
+    {/* Musical notes */}
+    <Path d="M80 300 Q90 290 100 300 Q110 310 100 320 Q90 310 80 300Z" fill="url(#sacredGradient)" />
+    <Line x1="320" y1="150" x2="320" y2="120" stroke="url(#sacredGradient)" strokeWidth="2" />
+  </Svg>
+);
+
+// Navigation Component
+const NavigationBar: React.FC = () => {
+  const router = useRouter();
+  
+  return (
+    <View style={styles.navigationBar}>
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/')}
+      >
+        <Ionicons name="recording" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Multitrack</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/effects')}
+      >
+        <Ionicons name="options" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Effects</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/sequencer')}
+      >
+        <Ionicons name="grid" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Beats</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/samples')}
+      >
+        <Ionicons name="library" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Library</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={[styles.navButton, styles.activeNavButton]}
+      >
+        <Ionicons name="pulse" size={20} color="#ffffff" />
+        <Text style={styles.navButtonText}>Waveform</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 // Generate sample waveform data for demonstration
 const generateSampleWaveform = (): WaveformData => {
@@ -73,7 +168,7 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({
     return (
       <View style={styles.emptyWaveform}>
         <Ionicons name="pulse" size={48} color="#666" />
-        <Text style={styles.emptyWaveformText}>No audio loaded</Text>
+        <Text style={styles.emptyWaveformText}>No blessed audio loaded</Text>
       </View>
     );
   }
@@ -126,14 +221,14 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({
             y1={waveformHeight / 2}
             x2={waveformWidth}
             y2={waveformHeight / 2}
-            stroke="#333"
+            stroke="#4a2a2a"
             strokeWidth={1}
           />
           
           {/* Waveform path */}
           <Path
             d={generateWaveformPath()}
-            stroke="#00ff00"
+            stroke="#ff4500"
             strokeWidth={2}
             fill="none"
           />
@@ -145,7 +240,7 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({
               y={0}
               width={Math.max(0, playheadPosition)}
               height={waveformHeight}
-              fill="rgba(0, 255, 0, 0.2)"
+              fill="rgba(255, 69, 0, 0.2)"
             />
           )}
           
@@ -156,8 +251,8 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({
               y1={0}
               x2={playheadPosition}
               y2={waveformHeight}
-              stroke="#fff"
-              strokeWidth={2}
+              stroke="#ffcd56"
+              strokeWidth={3}
             />
           )}
         </Svg>
@@ -175,9 +270,10 @@ export default function WaveformEditor() {
   const [selectedTrack, setSelectedTrack] = useState(0);
   
   const tracks = [
-    { id: 0, name: 'Lead Vocal', waveform: sampleWaveform, volume: 0.8 },
-    { id: 1, name: 'Guitar', waveform: sampleWaveform, volume: 0.6 },
-    { id: 2, name: 'Drums', waveform: sampleWaveform, volume: 1.0 },
+    { id: 0, name: 'Praise Vocal', waveform: sampleWaveform, volume: 0.8 },
+    { id: 1, name: 'Worship Guitar', waveform: sampleWaveform, volume: 0.6 },
+    { id: 2, name: 'Holy Drums', waveform: sampleWaveform, volume: 1.0 },
+    { id: 3, name: 'Sacred Bass', waveform: sampleWaveform, volume: 0.7 },
   ];
   
   useEffect(() => {
@@ -209,27 +305,38 @@ export default function WaveformEditor() {
   
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* Background Cross */}
+      <SacredBackground width={400} height={800} />
+      
+      {/* Header with Graffiti Title */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Waveform Editor</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity style={styles.headerButton}>
-            <Ionicons name="cut" size={20} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.headerButton}>
-            <Ionicons name="copy" size={20} color="#fff" />
-          </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <CrossIcon size={32} color="#ff4500" />
+          <View style={styles.titleTextContainer}>
+            <Text style={styles.mainTitle}>Gospel and Praise</Text>
+            <Text style={styles.subTitle}>D.A.W. To Worship Yahweh</Text>
+          </View>
+          <CrossIcon size={32} color="#ff4500" />
+        </View>
+      </View>
+      
+      {/* Navigation Bar */}
+      <NavigationBar />
+      
+      {/* Progress Bar */}
+      <View style={styles.progressContainer}>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: `${((currentTime / sampleWaveform.duration) * 100)}%` }]} />
         </View>
       </View>
       
       {/* Time Display */}
       <View style={styles.timeDisplay}>
+        <CrossIcon size={16} color="#ff4500" />
         <Text style={styles.timeText}>
           {formatTime(currentTime)} / {formatTime(sampleWaveform.duration)}
         </Text>
+        <CrossIcon size={16} color="#ff4500" />
       </View>
       
       {/* Tracks List */}
@@ -243,6 +350,7 @@ export default function WaveformEditor() {
             ]}
             onPress={() => setSelectedTrack(track.id)}
           >
+            <CrossIcon size={12} color="#ff4500" />
             <Text style={[
               styles.trackTabText,
               selectedTrack === track.id && styles.trackTabTextActive
@@ -273,7 +381,7 @@ export default function WaveformEditor() {
             <Ionicons name="remove" size={20} color="#fff" />
           </TouchableOpacity>
           
-          <Text style={styles.zoomText}>Zoom: {zoomScale.toFixed(1)}x</Text>
+          <Text style={styles.zoomText}>Sacred Zoom: {zoomScale.toFixed(1)}x</Text>
           
           <TouchableOpacity
             style={styles.controlButton}
@@ -286,12 +394,19 @@ export default function WaveformEditor() {
       
       {/* Multi-track Timeline */}
       <View style={styles.timelineContainer}>
-        <Text style={styles.timelineTitle}>Multi-track Timeline</Text>
+        <View style={styles.timelineTitleContainer}>
+          <CrossIcon size={16} color="#ff4500" />
+          <Text style={styles.timelineTitle}>Blessed Multi-track Timeline</Text>
+          <CrossIcon size={16} color="#ff4500" />
+        </View>
         <ScrollView style={styles.timeline}>
           {tracks.map(track => (
             <View key={track.id} style={styles.timelineTrack}>
               <View style={styles.trackInfo}>
-                <Text style={styles.trackName}>{track.name}</Text>
+                <View style={styles.trackNameContainer}>
+                  <CrossIcon size={10} color="#ffcd56" />
+                  <Text style={styles.trackName}>{track.name}</Text>
+                </View>
                 <Text style={styles.trackVolume}>Vol: {Math.round(track.volume * 100)}%</Text>
               </View>
               <View style={styles.miniWaveform}>
@@ -312,7 +427,7 @@ export default function WaveformEditor() {
       {/* Transport Controls */}
       <View style={styles.transportControls}>
         <TouchableOpacity style={styles.transportButton}>
-          <Ionicons name="play-back" size={20} color="#fff" />
+          <Ionicons name="play-back" size={20} color="#ff4500" />
         </TouchableOpacity>
         
         <TouchableOpacity
@@ -323,11 +438,11 @@ export default function WaveformEditor() {
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.transportButton}>
-          <Ionicons name="play-forward" size={20} color="#fff" />
+          <Ionicons name="play-forward" size={20} color="#ff4500" />
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.transportButton}>
-          <Ionicons name="stop" size={20} color="#fff" />
+          <Ionicons name="stop" size={20} color="#ff4500" />
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.transportButton}>
@@ -338,24 +453,35 @@ export default function WaveformEditor() {
       {/* Edit Tools */}
       <View style={styles.editTools}>
         <TouchableOpacity style={styles.editButton}>
+          <CrossIcon size={14} color="#ff4500" />
           <Ionicons name="cut" size={18} color="#fff" />
-          <Text style={styles.editButtonText}>Cut</Text>
+          <Text style={styles.editButtonText}>Sacred Cut</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.editButton}>
+          <CrossIcon size={14} color="#ff4500" />
           <Ionicons name="copy" size={18} color="#fff" />
-          <Text style={styles.editButtonText}>Copy</Text>
+          <Text style={styles.editButtonText}>Blessed Copy</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.editButton}>
+          <CrossIcon size={14} color="#ff4500" />
           <Ionicons name="clipboard" size={18} color="#fff" />
-          <Text style={styles.editButtonText}>Paste</Text>
+          <Text style={styles.editButtonText}>Holy Paste</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.editButton}>
+          <CrossIcon size={14} color="#ff4500" />
           <Ionicons name="trash" size={18} color="#ff4444" />
-          <Text style={[styles.editButtonText, { color: '#ff4444' }]}>Delete</Text>
+          <Text style={[styles.editButtonText, { color: '#ff4444' }]}>Purify</Text>
         </TouchableOpacity>
+      </View>
+
+      {/* Sacred Footer */}
+      <View style={styles.sacredFooter}>
+        <CrossIcon size={24} color="#ffcd56" />
+        <Text style={styles.blessingText}>"Sing to the Lord a new song"</Text>
+        <CrossIcon size={24} color="#ffcd56" />
       </View>
     </SafeAreaView>
   );
@@ -366,43 +492,104 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1a0f0f',
   },
+  backgroundDecoration: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
   header: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingTop: 20,
+    backgroundColor: '#2a1a1a',
+    zIndex: 10,
+  },
+  titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    paddingTop: 20,
-    backgroundColor: '#4a1a1a',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    justifyContent: 'center',
+    gap: 12,
   },
-  backButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 69, 0, 0.2)',
-    borderRadius: 12,
+  titleTextContainer: {
+    alignItems: 'center',
   },
-  title: {
+  mainTitle: {
     color: '#ffffff',
     fontSize: 20,
-    fontWeight: '700',
-    letterSpacing: 0.5,
+    fontWeight: '900',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    textShadowColor: '#ff4500',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 6,
+    fontStyle: 'italic',
   },
-  headerButtons: {
+  subTitle: {
+    color: '#ffcd56',
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    textShadowColor: '#ff4500',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    fontStyle: 'italic',
+    marginTop: -2,
+  },
+  navigationBar: {
     flexDirection: 'row',
-    gap: 8,
+    backgroundColor: '#2a1a1a',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#4a2a2a',
+    zIndex: 10,
   },
-  headerButton: {
-    padding: 10,
+  navButton: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    gap: 4,
+  },
+  activeNavButton: {
     backgroundColor: 'rgba(255, 69, 0, 0.2)',
-    borderRadius: 12,
+    borderRadius: 8,
+  },
+  navButtonText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  inactiveNavText: {
+    color: '#ffb366',
+  },
+  progressContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#2a1a1a',
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: '#4a2a2a',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#ff4500',
+    borderRadius: 2,
   },
   timeDisplay: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 16,
     backgroundColor: '#2a1212',
+    gap: 12,
   },
   timeText: {
     color: '#ff4500',
@@ -413,8 +600,12 @@ const styles = StyleSheet.create({
   },
   tracksList: {
     backgroundColor: '#2a1a1a',
+    zIndex: 5,
   },
   trackTab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderBottomWidth: 3,
@@ -436,17 +627,18 @@ const styles = StyleSheet.create({
   mainWaveformArea: {
     flex: 1,
     padding: 20,
+    zIndex: 5,
   },
   waveformContainer: {
     backgroundColor: '#2a1a1a',
     borderRadius: 16,
     padding: 20,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 69, 0, 0.2)',
-    shadowColor: '#000',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 69, 0, 0.3)',
+    shadowColor: '#ff4500',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
@@ -471,6 +663,7 @@ const styles = StyleSheet.create({
     color: '#cc6633',
     fontSize: 14,
     marginTop: 8,
+    fontStyle: 'italic',
   },
   waveformControls: {
     flexDirection: 'row',
@@ -485,8 +678,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(139, 69, 19, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 69, 0, 0.1)',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 69, 0, 0.3)',
   },
   zoomText: {
     color: '#ffffff',
@@ -499,12 +692,19 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 69, 0, 0.2)',
+    zIndex: 5,
+  },
+  timelineTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 16,
   },
   timelineTitle: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: '700',
-    marginBottom: 16,
     letterSpacing: 0.3,
   },
   timeline: {
@@ -517,12 +717,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     backgroundColor: '#2a1a1a',
     borderRadius: 12,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: 'rgba(255, 69, 0, 0.2)',
   },
   trackInfo: {
     width: 120,
     paddingHorizontal: 16,
+  },
+  trackNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
   },
   trackName: {
     color: '#ffffff',
@@ -545,6 +751,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#2a1212',
     gap: 16,
+    zIndex: 5,
   },
   transportButton: {
     width: 48,
@@ -553,8 +760,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(139, 69, 19, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 69, 0, 0.1)',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 69, 0, 0.3)',
   },
   playButton: {
     backgroundColor: '#ff4500',
@@ -573,15 +780,35 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 16,
     backgroundColor: '#2a1a1a',
+    zIndex: 5,
   },
   editButton: {
+    flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-    gap: 6,
+    gap: 4,
   },
   editButtonText: {
     color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
+  },
+  sacredFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#2a1a1a',
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#4a2a2a',
+    zIndex: 5,
+  },
+  blessingText: {
+    color: '#ffcd56',
+    fontSize: 12,
+    fontStyle: 'italic',
+    fontWeight: '500',
+    letterSpacing: 0.3,
   },
 });
