@@ -303,6 +303,9 @@ export default function WaveformEditor() {
   
   return (
     <SafeAreaView style={styles.container}>
+      {/* Corner Crosses */}
+      <CornerCrosses />
+      
       {/* Background Cross */}
       <SacredBackground width={400} height={800} />
       
