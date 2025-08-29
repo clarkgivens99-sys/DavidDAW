@@ -182,10 +182,16 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
-  stuck_tasks: []
+  current_focus:
+    - "Multi-track audio recording interface"
+    - "Waveform visualization"
+    - "Transport controls (play/pause/record/stop)"
+  stuck_tasks:
+    - "Multi-track audio recording interface"
+    - "Waveform visualization"
+    - "Transport controls (play/pause/record/stop)"
   test_all: false
-  test_priority: "high_first"
+  test_priority: "stuck_first"
 
 agent_communication:
   - agent: "main"
