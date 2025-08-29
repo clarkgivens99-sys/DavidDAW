@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   inactiveNavText: {
-    color: '#ffb366',
+    color: '#ffffff',
   },
   backButton: {
     padding: 8,
