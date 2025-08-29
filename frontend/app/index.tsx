@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 
 const { width, height } = Dimensions.get('window');
