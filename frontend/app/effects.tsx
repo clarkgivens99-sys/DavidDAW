@@ -332,7 +332,8 @@ export default function EffectsRack() {
         ))}
       </View>
     </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
