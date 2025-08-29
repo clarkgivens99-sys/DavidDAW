@@ -779,7 +779,7 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   blessingText: {
-    color: '#ffcd56',
+    color: '#ffffff',
     fontSize: 12,
     fontStyle: 'italic',
     fontWeight: '500',
