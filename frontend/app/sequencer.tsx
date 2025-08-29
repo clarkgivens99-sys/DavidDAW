@@ -56,20 +56,28 @@ const initialPattern: SequenceStep[] = Array(16).fill(null).map(() => ({
   perc: false,
 }));
 
-// Cross SVG Component
+// Cross SVG Component - Standard Christian Cross
 const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24">
     <Defs>
       <LinearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <Stop offset="0%" stopColor={color} stopOpacity="1" />
-        <Stop offset="100%" stopColor="#ffcd56" stopOpacity="0.8" />
+        <Stop offset="50%" stopColor="#ffcd56" stopOpacity="0.9" />
+        <Stop offset="100%" stopColor={color} stopOpacity="0.8" />
       </LinearGradient>
     </Defs>
-    <Path
-      d="M12 2L12 8L18 8L18 10L12 10L12 14L18 14L18 16L12 16L12 22L10 22L10 16L4 16L4 14L10 14L10 10L4 10L4 8L10 8L10 2L12 2Z"
-      fill="url(#crossGradient)"
-      stroke={color}
-      strokeWidth="0.5"
+    {/* Standard Christian Cross: one vertical line with one horizontal line at 2/3 height */}
+    <Line
+      x1="12" y1="3" x2="12" y2="21"
+      stroke="url(#crossGradient)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+    <Line
+      x1="6" y1="9" x2="18" y2="9"
+      stroke="url(#crossGradient)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
     />
   </Svg>
 );
