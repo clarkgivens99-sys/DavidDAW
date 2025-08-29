@@ -625,9 +625,37 @@ const styles = StyleSheet.create({
     minWidth: 60,
     textAlign: 'right',
   },
-  slider: {
-    height: 40,
+  sliderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
     marginHorizontal: 16,
+  },
+  parameterAdjustButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 69, 0, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#ff4500',
+  },
+  adjustButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  parameterBar: {
+    flex: 1,
+    height: 6,
+    backgroundColor: '#4a2a2a',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  parameterFill: {
+    height: '100%',
+    borderRadius: 3,
   },
   footer: {
     flexDirection: 'row',
