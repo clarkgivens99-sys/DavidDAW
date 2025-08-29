@@ -14,6 +14,7 @@ import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
+import Svg, { Path, Line, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
 
@@ -23,6 +24,8 @@ import { create } from 'zustand';
 interface Track {
   id: string;
   name: string;
+  instrument: string;
+  color: string;
   audio_data?: string;
   duration?: number;
   volume: number;
@@ -33,6 +36,8 @@ interface Track {
   sound?: Audio.Sound;
   isRecording: boolean;
   isPlaying: boolean;
+  bpm: number;
+  waveformData: number[];
 }
 
 interface DAWStore {
@@ -40,6 +45,7 @@ interface DAWStore {
   isPlaying: boolean;
   currentProject: string | null;
   tempo: number;
+  playbackPosition: number;
   addTrack: () => void;
   removeTrack: (id: string) => void;
   updateTrack: (id: string, updates: Partial<Track>) => void;
@@ -50,24 +56,148 @@ interface DAWStore {
   toggleMute: (trackId: string) => void;
   toggleSolo: (trackId: string) => void;
   setVolume: (trackId: string, volume: number) => void;
+  setPlaybackPosition: (position: number) => void;
 }
 
-const useDAWStore = create<DAWStore>((set, get) => ({
-  tracks: [],
-  isPlaying: false,
-  currentProject: null,
-  tempo: 120,
+// Generate realistic waveform data
+const generateWaveformData = (instrument: string) => {
+  const data: number[] = [];
+  const length = 200;
   
-  addTrack: () => {
-    const newTrack: Track = {
-      id: `track_${Date.now()}`,
-      name: `Track ${get().tracks.length + 1}`,
+  for (let i = 0; i < length; i++) {
+    const t = i / length;
+    let amplitude = 0;
+    
+    // Different waveform patterns based on instrument
+    switch (instrument) {
+      case 'guitar':
+        amplitude = Math.sin(t * 12) * Math.exp(-t * 2) * (0.6 + Math.random() * 0.4);
+        break;
+      case 'drums':
+        amplitude = Math.random() > 0.8 ? (0.8 + Math.random() * 0.4) : Math.random() * 0.3;
+        break;
+      case 'vocal':
+        amplitude = Math.sin(t * 8) * (0.4 + Math.sin(t * 20) * 0.3) * (0.7 + Math.random() * 0.3);
+        break;
+      case 'bass':
+        amplitude = Math.sin(t * 6) * Math.exp(-t * 1.5) * (0.5 + Math.random() * 0.3);
+        break;
+      case 'keys':
+        amplitude = Math.sin(t * 10) * Math.exp(-t * 2.5) * (0.6 + Math.random() * 0.2);
+        break;
+      default:
+        amplitude = Math.sin(t * 8) * (0.5 + Math.random() * 0.3);
+    }
+    
+    data.push(Math.max(0, Math.min(1, Math.abs(amplitude))));
+  }
+  
+  return data;
+};
+
+const useDAWStore = create<DAWStore>((set, get) => ({
+  tracks: [
+    {
+      id: 'track_1',
+      name: 'Lead Guitar',
+      instrument: 'guitar',
+      color: '#ff6b6b',
       volume: 1.0,
       pan: 0.0,
       muted: false,
       solo: false,
       isRecording: false,
-      isPlaying: false
+      isPlaying: false,
+      bpm: 120,
+      waveformData: generateWaveformData('guitar'),
+      audio_data: 'sample_data'
+    },
+    {
+      id: 'track_2',
+      name: 'Vocals',
+      instrument: 'vocal',
+      color: '#ff9f40',
+      volume: 0.9,
+      pan: 0.0,
+      muted: false,
+      solo: false,
+      isRecording: false,
+      isPlaying: false,
+      bpm: 120,
+      waveformData: generateWaveformData('vocal'),
+      audio_data: 'sample_data'
+    },
+    {
+      id: 'track_3',
+      name: 'Bass Guitar',
+      instrument: 'bass',
+      color: '#ffcd56',
+      volume: 0.8,
+      pan: 0.0,
+      muted: false,
+      solo: false,
+      isRecording: false,
+      isPlaying: false,
+      bpm: 120,
+      waveformData: generateWaveformData('bass'),
+      audio_data: 'sample_data'
+    },
+    {
+      id: 'track_4',
+      name: 'Drums',
+      instrument: 'drums',
+      color: '#c9cbcf',
+      volume: 1.0,
+      pan: 0.0,
+      muted: false,
+      solo: false,
+      isRecording: false,
+      isPlaying: false,
+      bpm: 120,
+      waveformData: generateWaveformData('drums'),
+      audio_data: 'sample_data'
+    },
+    {
+      id: 'track_5',
+      name: 'Synth Keys',
+      instrument: 'keys',
+      color: '#9966ff',
+      volume: 0.7,
+      pan: 0.0,
+      muted: false,
+      solo: false,
+      isRecording: false,
+      isPlaying: false,
+      bpm: 120,
+      waveformData: generateWaveformData('keys'),
+      audio_data: 'sample_data'
+    }
+  ],
+  isPlaying: false,
+  currentProject: null,
+  tempo: 120,
+  playbackPosition: 0.3,
+  
+  addTrack: () => {
+    const instruments = ['guitar', 'vocal', 'bass', 'drums', 'keys'];
+    const colors = ['#ff6b6b', '#ff9f40', '#ffcd56', '#4bc0c0', '#9966ff'];
+    const trackCount = get().tracks.length;
+    const instrument = instruments[trackCount % instruments.length];
+    const color = colors[trackCount % colors.length];
+    
+    const newTrack: Track = {
+      id: `track_${Date.now()}`,
+      name: `Track ${trackCount + 1}`,
+      instrument,
+      color,
+      volume: 1.0,
+      pan: 0.0,
+      muted: false,
+      solo: false,
+      isRecording: false,
+      isPlaying: false,
+      bpm: 120,
+      waveformData: generateWaveformData(instrument)
     };
     set(state => ({ tracks: [...state.tracks, newTrack] }));
   },
@@ -119,7 +249,6 @@ const useDAWStore = create<DAWStore>((set, get) => ({
       const uri = track.recording.getURI();
       
       if (uri) {
-        // Convert recording to base64 for storage
         const response = await fetch(uri);
         const blob = await response.blob();
         const reader = new FileReader();
@@ -192,11 +321,70 @@ const useDAWStore = create<DAWStore>((set, get) => ({
       track.sound.setVolumeAsync(volume);
     }
     get().updateTrack(trackId, { volume });
+  },
+  
+  setPlaybackPosition: (position: number) => {
+    set({ playbackPosition: position });
   }
 }));
 
+// Waveform Component
+const WaveformDisplay: React.FC<{ waveformData: number[], color: string, isPlaying: boolean }> = ({ 
+  waveformData, 
+  color, 
+  isPlaying 
+}) => {
+  const waveformWidth = width - 120;
+  const waveformHeight = 50;
+  
+  const generatePath = () => {
+    let path = '';
+    const centerY = waveformHeight / 2;
+    
+    waveformData.forEach((amplitude, index) => {
+      const x = (index / waveformData.length) * waveformWidth;
+      const y1 = centerY - (amplitude * centerY * 0.8);
+      const y2 = centerY + (amplitude * centerY * 0.8);
+      
+      if (index === 0) {
+        path += `M ${x} ${y1}`;
+      } else {
+        path += ` L ${x} ${y1}`;
+      }
+    });
+    
+    // Add bottom path
+    for (let i = waveformData.length - 1; i >= 0; i--) {
+      const x = (i / waveformData.length) * waveformWidth;
+      const amplitude = waveformData[i];
+      const y2 = (waveformHeight / 2) + (amplitude * (waveformHeight / 2) * 0.8);
+      path += ` L ${x} ${y2}`;
+    }
+    
+    path += ' Z';
+    return path;
+  };
+  
+  return (
+    <Svg width={waveformWidth} height={waveformHeight} style={styles.waveform}>
+      <Defs>
+        <LinearGradient id="waveformGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <Stop offset="0%" stopColor={color} stopOpacity="0.8" />
+          <Stop offset="100%" stopColor={color} stopOpacity="0.3" />
+        </LinearGradient>
+      </Defs>
+      <Path
+        d={generatePath()}
+        fill="url(#waveformGradient)"
+        stroke={color}
+        strokeWidth="1"
+      />
+    </Svg>
+  );
+};
+
 // Track Component
-const TrackComponent: React.FC<{ track: Track }> = ({ track }) => {
+const TrackStrip: React.FC<{ track: Track, index: number }> = ({ track, index }) => {
   const { 
     startRecording, 
     stopRecording, 
@@ -204,144 +392,75 @@ const TrackComponent: React.FC<{ track: Track }> = ({ track }) => {
     stopTrack, 
     toggleMute, 
     toggleSolo, 
-    setVolume, 
     removeTrack 
   } = useDAWStore();
 
-  const handleRecordToggle = () => {
-    if (track.isRecording) {
-      stopRecording(track.id);
-    } else {
-      startRecording(track.id);
-    }
-  };
-
-  const handlePlayToggle = () => {
-    if (track.isPlaying) {
-      stopTrack(track.id);
-    } else {
-      playTrack(track.id);
+  const getInstrumentIcon = (instrument: string) => {
+    switch (instrument) {
+      case 'guitar': return 'musical-note';
+      case 'vocal': return 'mic';
+      case 'bass': return 'radio';
+      case 'drums': return 'radio-button-on';
+      case 'keys': return 'keypad';
+      default: return 'musical-notes';
     }
   };
 
   return (
-    <View style={styles.trackContainer}>
-      <View style={styles.trackHeader}>
-        <Text style={styles.trackName}>{track.name}</Text>
-        <TouchableOpacity 
-          onPress={() => removeTrack(track.id)}
-          style={styles.deleteButton}
-        >
-          <Ionicons name="trash" size={16} color="#ff4444" />
-        </TouchableOpacity>
+    <View style={[styles.trackStrip, { borderColor: track.color }]}>
+      {/* Track Icon */}
+      <View style={[styles.trackIcon, { backgroundColor: track.color }]}>
+        <Ionicons 
+          name={getInstrumentIcon(track.instrument)} 
+          size={24} 
+          color="#ffffff" 
+        />
       </View>
       
-      <View style={styles.trackControls}>
-        {/* Record Button */}
-        <TouchableOpacity
-          style={[styles.controlButton, track.isRecording && styles.recordingButton]}
-          onPress={handleRecordToggle}
-        >
-          <Ionicons 
-            name={track.isRecording ? "stop" : "radio-button-on"} 
-            size={24} 
-            color={track.isRecording ? "#fff" : "#ff4444"} 
-          />
-        </TouchableOpacity>
-        
-        {/* Play Button */}
-        <TouchableOpacity
-          style={[styles.controlButton, track.isPlaying && styles.playingButton]}
-          onPress={handlePlayToggle}
-          disabled={!track.audio_data}
-        >
-          <Ionicons 
-            name={track.isPlaying ? "pause" : "play"} 
-            size={24} 
-            color={track.audio_data ? (track.isPlaying ? "#fff" : "#00ff00") : "#666"} 
-          />
-        </TouchableOpacity>
-        
-        {/* Mute Button */}
-        <TouchableOpacity
-          style={[styles.controlButton, track.muted && styles.activeButton]}
-          onPress={() => toggleMute(track.id)}
-        >
-          <Ionicons 
-            name={track.muted ? "volume-mute" : "volume-medium"} 
-            size={20} 
-            color={track.muted ? "#fff" : "#ffa500"} 
-          />
-        </TouchableOpacity>
-        
-        {/* Solo Button */}
-        <TouchableOpacity
-          style={[styles.controlButton, track.solo && styles.activeButton]}
-          onPress={() => toggleSolo(track.id)}
-        >
-          <Text style={[styles.controlButtonText, track.solo && styles.activeButtonText]}>S</Text>
-        </TouchableOpacity>
-      </View>
-      
-      {/* Volume Slider Placeholder */}
-      <View style={styles.volumeContainer}>
-        <Text style={styles.volumeLabel}>Vol: {Math.round(track.volume * 100)}%</Text>
-      </View>
-      
-      {/* Waveform Placeholder */}
+      {/* Waveform Display */}
       <View style={styles.waveformContainer}>
-        {track.audio_data ? (
-          <View style={styles.waveformPlaceholder}>
-            <Text style={styles.waveformText}>♪ Audio Recorded</Text>
-          </View>
-        ) : (
-          <View style={styles.emptyWaveform}>
-            <Text style={styles.emptyWaveformText}>No audio</Text>
-          </View>
-        )}
+        <WaveformDisplay 
+          waveformData={track.waveformData} 
+          color={track.color}
+          isPlaying={track.isPlaying}
+        />
       </View>
-    </View>
-  );
-};
-
-// Transport Controls Component
-const TransportControls: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const { tracks, tempo } = useDAWStore();
-
-  return (
-    <View style={styles.transportContainer}>
-      <TouchableOpacity style={styles.transportButton}>
-        <Ionicons name="play-back" size={24} color="#fff" />
-      </TouchableOpacity>
       
-      <TouchableOpacity 
-        style={[styles.transportButton, styles.mainPlayButton]}
-        onPress={() => setIsPlaying(!isPlaying)}
-      >
-        <Ionicons name={isPlaying ? "pause" : "play"} size={32} color="#fff" />
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.transportButton}>
-        <Ionicons name="play-forward" size={24} color="#fff" />
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.transportButton}>
-        <Ionicons name="stop" size={24} color="#fff" />
-      </TouchableOpacity>
-      
-      <Text style={styles.tempoText}>BPM: {tempo}</Text>
+      {/* Track Info */}
+      <View style={styles.trackInfo}>
+        <Text style={styles.bpmText}>{track.bpm} BPM</Text>
+        <View style={styles.trackControls}>
+          <TouchableOpacity 
+            style={[styles.trackControlButton, track.isRecording && styles.recordingActive]}
+            onPress={() => track.isRecording ? stopRecording(track.id) : startRecording(track.id)}
+          >
+            <View style={styles.recordDot} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.trackControlButton, track.muted && styles.muteActive]}
+            onPress={() => toggleMute(track.id)}
+          >
+            <View style={styles.controlDot} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.trackControlButton, track.solo && styles.soloActive]}
+            onPress={() => toggleSolo(track.id)}
+          >
+            <View style={styles.controlDot} />
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
 
 // Main DAW Component
 export default function DAWApp() {
-  const { tracks, addTrack } = useDAWStore();
+  const { tracks, addTrack, isPlaying, playbackPosition, setPlaybackPosition } = useDAWStore();
   const router = useRouter();
+  const [masterPlay, setMasterPlay] = useState(false);
 
   useEffect(() => {
-    // Initialize audio session
     Audio.setAudioModeAsync({
       allowsRecordingIOS: true,
       staysActiveInBackground: true,
@@ -351,68 +470,76 @@ export default function DAWApp() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1a0f0f" />
       
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.appTitle}>The Messenger's D.A.W.</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity 
-            style={styles.headerButton}
-            onPress={() => router.push('/waveform')}
-          >
-            <Ionicons name="pulse" size={20} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.headerButton}
-            onPress={() => router.push('/effects')}
-          >
-            <Ionicons name="options" size={20} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.headerButton}
-            onPress={() => router.push('/sequencer')}
-          >
-            <Ionicons name="grid" size={20} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.headerButton}
-            onPress={() => router.push('/samples')}
-          >
-            <Ionicons name="library" size={20} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.headerButton}>
-            <Ionicons name="settings" size={20} color="#fff" />
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.backButton}>
+          <Ionicons name="chevron-back" size={28} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.appTitle}>Multi Track Recording</Text>
+        <TouchableOpacity style={styles.menuButton}>
+          <View style={styles.menuLines}>
+            <View style={styles.menuLine} />
+            <View style={styles.menuLine} />
+            <View style={styles.menuLine} />
+          </View>
+        </TouchableOpacity>
+      </View>
+      
+      {/* Progress Bar */}
+      <View style={styles.progressContainer}>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: `${playbackPosition * 100}%` }]} />
         </View>
       </View>
       
-      {/* Transport Controls */}
-      <TransportControls />
+      {/* Tracks */}
+      <ScrollView style={styles.tracksScrollView} showsVerticalScrollIndicator={false}>
+        {tracks.map((track, index) => (
+          <TrackStrip key={track.id} track={track} index={index} />
+        ))}
+      </ScrollView>
       
-      {/* Tracks Section */}
-      <View style={styles.tracksSection}>
-        <View style={styles.tracksSectionHeader}>
-          <Text style={styles.tracksSectionTitle}>Tracks ({tracks.length})</Text>
-          <TouchableOpacity style={styles.addTrackButton} onPress={addTrack}>
-            <Ionicons name="add" size={20} color="#fff" />
-            <Text style={styles.addTrackText}>Add Track</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Transport Controls */}
+      <View style={styles.transportContainer}>
+        <TouchableOpacity style={styles.transportButton}>
+          <View style={styles.transportIcon}>
+            <Ionicons name="play" size={20} color="#ff4500" />
+          </View>
+          <Text style={styles.transportLabel}>Play</Text>
+        </TouchableOpacity>
         
-        <ScrollView style={styles.tracksContainer}>
-          {tracks.length === 0 ? (
-            <View style={styles.emptyTracksContainer}>
-              <Ionicons name="musical-notes" size={48} color="#666" />
-              <Text style={styles.emptyTracksText}>No tracks yet</Text>
-              <Text style={styles.emptyTracksSubtext}>Tap "Add Track" to start recording</Text>
-            </View>
-          ) : (
-            tracks.map(track => (
-              <TrackComponent key={track.id} track={track} />
-            ))
-          )}
-        </ScrollView>
+        <TouchableOpacity 
+          style={styles.transportButton}
+          onPress={() => setMasterPlay(!masterPlay)}
+        >
+          <View style={[styles.transportIcon, masterPlay && styles.transportActive]}>
+            <Ionicons name={masterPlay ? "pause" : "play"} size={20} color="#ff4500" />
+          </View>
+          <Text style={styles.transportLabel}>Play</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.transportButton}>
+          <View style={styles.transportIcon}>
+            <View style={styles.recordButton} />
+          </View>
+          <Text style={styles.transportLabel}>Record</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.transportButton}>
+          <View style={styles.transportIcon}>
+            <View style={styles.recordButton} />
+          </View>
+          <Text style={styles.transportLabel}>Record</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.transportButton}>
+          <View style={styles.transportIcon}>
+            <View style={styles.stopButton} />
+          </View>
+          <Text style={styles.transportLabel}>Stop</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
