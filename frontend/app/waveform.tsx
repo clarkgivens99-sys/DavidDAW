@@ -247,7 +247,7 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({
           {/* Waveform path */}
           <Path
             d={generateWaveformPath()}
-            stroke="#ff4500"
+            stroke="#00ff00"
             strokeWidth={2}
             fill="none"
           />
