@@ -550,7 +550,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/waveform')}
       >
-        <Ionicons name="pulse" size={20} color="#ffb366" />
+        <Ionicons name="pulse" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Waveform</Text>
       </TouchableOpacity>
     </View>
