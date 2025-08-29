@@ -542,7 +542,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/samples')}
       >
-        <Ionicons name="library" size={20} color="#ffb366" />
+        <Ionicons name="library" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Library</Text>
       </TouchableOpacity>
       
