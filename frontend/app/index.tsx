@@ -849,7 +849,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   bpmText: {
-    color: '#ffb366',
+    color: '#ffffff',
     fontSize: 11,
     fontWeight: '500',
     marginBottom: 8,
