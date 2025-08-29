@@ -135,7 +135,7 @@ export default function EffectsRack() {
   };
 
   const getEffectStatusColor = (enabled: boolean) => {
-    return enabled ? '#00ff00' : '#666';
+    return enabled ? '#ff4500' : '#8b4513';
   };
 
   return (
@@ -179,7 +179,7 @@ export default function EffectsRack() {
                   <Ionicons 
                     name="power" 
                     size={16} 
-                    color={effect.enabled ? '#1a1a1a' : '#666'} 
+                    color={effect.enabled ? '#ffffff' : '#8b4513'} 
                   />
                 </TouchableOpacity>
               </View>
@@ -256,9 +256,9 @@ export default function EffectsRack() {
                   onValueChange={(value) => 
                     selectedEffect && updateParameter(selectedEffect.id, param.id, value)
                   }
-                  minimumTrackTintColor="#007AFF"
-                  maximumTrackTintColor="#333"
-                  thumbTintColor="#007AFF"
+                  minimumTrackTintColor="#ff4500"
+                  maximumTrackTintColor="#8b4513"
+                  thumbTintColor="#ff4500"
                 />
                 
                 <View style={styles.sliderLabels}>
@@ -284,7 +284,7 @@ export default function EffectsRack() {
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.resetButton}>
-          <Ionicons name="refresh" size={20} color="#ff4444" />
+          <Ionicons name="refresh" size={20} color="#dc143c" />
           <Text style={styles.resetButtonText}>Reset All</Text>
         </TouchableOpacity>
       </View>
@@ -295,7 +295,7 @@ export default function EffectsRack() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f1419',
+    backgroundColor: '#1a0f0f',
   },
   header: {
     flexDirection: 'row',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     paddingTop: 20,
-    backgroundColor: '#1e2a4a',
+    backgroundColor: '#4a1a1a',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 69, 0, 0.2)',
     borderRadius: 12,
   },
   title: {
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 69, 0, 0.2)',
     borderRadius: 12,
   },
   effectsContainer: {
@@ -337,11 +337,11 @@ const styles = StyleSheet.create({
   },
   effectCard: {
     width: '47%',
-    backgroundColor: '#1a2332',
+    backgroundColor: '#2a1a1a',
     borderRadius: 20,
     padding: 20,
     borderWidth: 2,
-    borderColor: 'rgba(74, 144, 226, 0.2)',
+    borderColor: 'rgba(255, 69, 0, 0.2)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
@@ -349,8 +349,8 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   effectCardEnabled: {
-    borderColor: '#4a90e2',
-    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+    borderColor: '#ff4500',
+    backgroundColor: 'rgba(255, 69, 0, 0.1)',
   },
   effectHeader: {
     flexDirection: 'row',
@@ -362,23 +362,23 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: 'rgba(45, 74, 122, 0.4)',
+    backgroundColor: 'rgba(139, 69, 19, 0.4)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 69, 0, 0.2)',
   },
   powerButtonOn: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#ff4500',
     borderColor: '#ffffff',
-    shadowColor: '#4a90e2',
+    shadowColor: '#ff4500',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 4,
   },
   effectName: {
-    color: '#a8bce8',
+    color: '#ffb366',
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 16,
@@ -396,18 +396,18 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   paramLabel: {
-    color: '#6b7d9e',
+    color: '#cc6633',
     fontSize: 12,
     fontWeight: '500',
   },
   paramValue: {
-    color: '#4a90e2',
+    color: '#ff4500',
     fontSize: 12,
     fontWeight: '600',
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#0f1419',
+    backgroundColor: '#1a0f0f',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     paddingTop: 20,
-    backgroundColor: '#1e2a4a',
+    backgroundColor: '#4a1a1a',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -430,17 +430,17 @@ const styles = StyleSheet.create({
   modalToggle: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: 'rgba(45, 74, 122, 0.4)',
+    backgroundColor: 'rgba(139, 69, 19, 0.4)',
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 69, 0, 0.2)',
   },
   modalToggleOn: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#ff4500',
     borderColor: '#ffffff',
   },
   modalToggleText: {
-    color: '#a8bce8',
+    color: '#ffb366',
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -454,11 +454,11 @@ const styles = StyleSheet.create({
   },
   parameterControl: {
     marginBottom: 32,
-    backgroundColor: '#1a2332',
+    backgroundColor: '#2a1a1a',
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(74, 144, 226, 0.2)',
+    borderColor: 'rgba(255, 69, 0, 0.2)',
   },
   parameterHeader: {
     flexDirection: 'row',
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   parameterValue: {
-    color: '#4a90e2',
+    color: '#ff4500',
     fontSize: 16,
     fontWeight: '700',
   },
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   sliderLabel: {
-    color: '#6b7d9e',
+    color: '#cc6633',
     fontSize: 12,
     fontWeight: '500',
   },
@@ -497,20 +497,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     padding: 20,
-    backgroundColor: '#162032',
+    backgroundColor: '#2a1212',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(74, 144, 226, 0.2)',
+    borderTopColor: 'rgba(255, 69, 0, 0.2)',
   },
   presetButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: 'rgba(45, 74, 122, 0.4)',
+    backgroundColor: 'rgba(139, 69, 19, 0.4)',
     borderRadius: 16,
     gap: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 69, 0, 0.1)',
   },
   presetButtonText: {
     color: '#ffffff',
@@ -522,14 +522,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+    backgroundColor: 'rgba(220, 20, 60, 0.2)',
     borderRadius: 16,
     gap: 8,
     borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.3)',
+    borderColor: 'rgba(220, 20, 60, 0.3)',
   },
   resetButtonText: {
-    color: '#ef4444',
+    color: '#dc143c',
     fontSize: 14,
     fontWeight: '600',
   },
