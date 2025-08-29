@@ -429,7 +429,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     paddingTop: 20,
-    background: 'linear-gradient(135deg, #1e2a4a 0%, #2d4a7a 100%)',
     backgroundColor: '#1e2a4a',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
