@@ -375,6 +375,12 @@ export default function DAWApp() {
           >
             <Ionicons name="grid" size={20} color="#fff" />
           </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.headerButton}
+            onPress={() => router.push('/samples')}
+          >
+            <Ionicons name="library" size={20} color="#fff" />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
             <Ionicons name="settings" size={20} color="#fff" />
           </TouchableOpacity>
