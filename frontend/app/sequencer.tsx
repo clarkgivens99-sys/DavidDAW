@@ -367,32 +367,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2a1a1a',
     zIndex: 10,
   },
-  backButton: {
-    padding: 8,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  title: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-  },
-  menuButton: {
-    padding: 8,
-  },
-  menuLines: {
-    gap: 3,
-  },
-  menuLine: {
-    width: 20,
-    height: 2,
-    backgroundColor: '#ffffff',
-    borderRadius: 1,
-  },
+
   progressContainer: {
     paddingHorizontal: 16,
     paddingVertical: 8,
