@@ -7,20 +7,20 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
-  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Audio } from 'expo-av';
+import Svg, { Path, Circle, Line, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 interface DrumPad {
   id: string;
   name: string;
-  sound: string; // base64 or sample name
+  sound: string;
   color: string;
   volume: number;
+  sacredName: string; // Religious themed names
 }
 
 interface SequenceStep {
@@ -35,14 +35,14 @@ interface SequenceStep {
 }
 
 const drumPads: DrumPad[] = [
-  { id: 'kick', name: 'Kick', sound: 'kick_sample', color: '#ef4444', volume: 1.0 },
-  { id: 'snare', name: 'Snare', sound: 'snare_sample', color: '#f59e0b', volume: 0.8 },
-  { id: 'hihat', name: 'Hi-Hat', sound: 'hihat_sample', color: '#eab308', volume: 0.6 },
-  { id: 'openhat', name: 'Open Hat', sound: 'openhat_sample', color: '#22c55e', volume: 0.7 },
-  { id: 'crash', name: 'Crash', sound: 'crash_sample', color: '#10b981', volume: 0.9 },
-  { id: 'ride', name: 'Ride', sound: 'ride_sample', color: '#06b6d4', volume: 0.7 },
-  { id: 'clap', name: 'Clap', sound: 'clap_sample', color: '#8b5cf6', volume: 0.8 },
-  { id: 'perc', name: 'Perc', sound: 'perc_sample', color: '#ec4899', volume: 0.6 },
+  { id: 'kick', name: 'Foundation', sacredName: 'Rock of Ages', sound: 'kick_sample', color: '#ef4444', volume: 1.0 },
+  { id: 'snare', name: 'Truth', sacredName: 'Voice of Truth', sound: 'snare_sample', color: '#f59e0b', volume: 0.8 },
+  { id: 'hihat', name: 'Grace', sacredName: 'Amazing Grace', sound: 'hihat_sample', color: '#eab308', volume: 0.6 },
+  { id: 'openhat', name: 'Spirit', sacredName: 'Holy Spirit', sound: 'openhat_sample', color: '#22c55e', volume: 0.7 },
+  { id: 'crash', name: 'Glory', sacredName: 'Glory Hallelujah', sound: 'crash_sample', color: '#10b981', volume: 0.9 },
+  { id: 'ride', name: 'Peace', sacredName: 'Prince of Peace', sound: 'ride_sample', color: '#06b6d4', volume: 0.7 },
+  { id: 'clap', name: 'Praise', sacredName: 'Clap Your Hands', sound: 'clap_sample', color: '#8b5cf6', volume: 0.8 },
+  { id: 'perc', name: 'Joy', sacredName: 'Joy to World', sound: 'perc_sample', color: '#ec4899', volume: 0.6 },
 ];
 
 const initialPattern: SequenceStep[] = Array(16).fill(null).map(() => ({
@@ -56,6 +56,55 @@ const initialPattern: SequenceStep[] = Array(16).fill(null).map(() => ({
   perc: false,
 }));
 
+// Cross SVG Component
+const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Defs>
+      <LinearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor={color} stopOpacity="1" />
+        <Stop offset="100%" stopColor="#ffcd56" stopOpacity="0.8" />
+      </LinearGradient>
+    </Defs>
+    <Path
+      d="M12 2L12 8L18 8L18 10L12 10L12 14L18 14L18 16L12 16L12 22L10 22L10 16L4 16L4 14L10 14L10 10L4 10L4 8L10 8L10 2L12 2Z"
+      fill="url(#crossGradient)"
+      stroke={color}
+      strokeWidth="0.5"
+    />
+  </Svg>
+);
+
+// Musical Note Background
+const MusicalBackground: React.FC<{ width: number; height: number }> = ({ width, height }) => (
+  <Svg width={width} height={height} style={styles.backgroundDecoration}>
+    <Defs>
+      <LinearGradient id="noteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="#ff4500" stopOpacity="0.2" />
+        <Stop offset="100%" stopColor="#ffcd56" stopOpacity="0.1" />
+      </LinearGradient>
+    </Defs>
+    {/* Treble Clef */}
+    <Path
+      d="M80 120 Q85 100 90 120 Q95 140 85 150 Q80 160 85 170"
+      stroke="url(#noteGradient)"
+      strokeWidth="3"
+      fill="none"
+    />
+    {/* Staff lines */}
+    <Line x1="30" y1="140" x2="370" y2="140" stroke="url(#noteGradient)" strokeWidth="1" />
+    <Line x1="30" y1="150" x2="370" y2="150" stroke="url(#noteGradient)" strokeWidth="1" />
+    <Line x1="30" y1="160" x2="370" y2="160" stroke="url(#noteGradient)" strokeWidth="1" />
+    <Line x1="30" y1="170" x2="370" y2="170" stroke="url(#noteGradient)" strokeWidth="1" />
+    <Line x1="30" y1="180" x2="370" y2="180" stroke="url(#noteGradient)" strokeWidth="1" />
+    
+    {/* Cross in corner */}
+    <Path
+      d="M320 60L320 40L324 40L324 60L340 60L340 64L324 64L324 80L320 80L320 64L304 64L304 60L320 60Z"
+      fill="url(#noteGradient)"
+    />
+  </Svg>
+);
+
 export default function BeatSequencer() {
   const router = useRouter();
   const [pattern, setPattern] = useState<SequenceStep[]>(initialPattern);
@@ -63,11 +112,9 @@ export default function BeatSequencer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [bpm, setBpm] = useState(120);
   const [selectedDrum, setSelectedDrum] = useState<string>('kick');
-  const [volume, setVolume] = useState(0.8);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Calculate step duration based on BPM
-  const stepDuration = (60 / bpm / 4) * 1000; // 16th notes
+  const stepDuration = (60 / bpm / 4) * 1000;
 
   useEffect(() => {
     if (isPlaying) {
@@ -96,106 +143,78 @@ export default function BeatSequencer() {
     ));
   };
 
-  const playDrumSound = async (drumId: string) => {
-    try {
-      // In a real implementation, you would load and play actual drum samples
-      console.log(`Playing ${drumId} sound`);
-      
-      // Simulate drum hit with haptic feedback if available
-      // You could add actual audio samples here
-    } catch (error) {
-      console.error('Error playing drum sound:', error);
-    }
-  };
-
-  const handleDrumPadPress = (drumId: string) => {
-    setSelectedDrum(drumId);
-    playDrumSound(drumId);
-  };
-
-  const clearPattern = () => {
-    setPattern(initialPattern);
-  };
-
-  const randomizePattern = () => {
-    setPattern(prev => prev.map(() => ({
-      kick: Math.random() > 0.7,
-      snare: Math.random() > 0.8,
-      hihat: Math.random() > 0.5,
-      openhat: Math.random() > 0.9,
-      crash: Math.random() > 0.95,
-      ride: Math.random() > 0.9,
-      clap: Math.random() > 0.85,
-      perc: Math.random() > 0.8,
-    })));
-  };
-
   const getStepColor = (stepIndex: number, drumId: string) => {
     const drum = drumPads.find(d => d.id === drumId);
     const isActive = pattern[stepIndex][drumId as keyof SequenceStep];
     const isCurrent = stepIndex === currentStep && isPlaying;
     
     if (isCurrent && isActive) return drum?.color || '#ffffff';
-    if (isCurrent) return '#4a90e2';
-    if (isActive) return drum?.color || '#6b7d9e';
-    return 'rgba(45, 74, 122, 0.3)';
+    if (isCurrent) return '#ff4500';
+    if (isActive) return drum?.color || '#cc6633';
+    return 'rgba(139, 69, 19, 0.3)';
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Background Musical Decorations */}
+      <MusicalBackground width={400} height={800} />
+      
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons name="chevron-back" size={28} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.title}>Beat Sequencer</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity style={styles.headerButton}>
-            <Ionicons name="save" size={20} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.headerButton}>
-            <Ionicons name="folder" size={20} color="#fff" />
-          </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <CrossIcon size={24} color="#ff4500" />
+          <Text style={styles.title}>Sacred Beats</Text>
+          <CrossIcon size={24} color="#ff4500" />
+        </View>
+        <TouchableOpacity style={styles.menuButton}>
+          <View style={styles.menuLines}>
+            <View style={styles.menuLine} />
+            <View style={styles.menuLine} />
+            <View style={styles.menuLine} />
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* Progress Bar */}
+      <View style={styles.progressContainer}>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: `${((currentStep + 1) / 16) * 100}%` }]} />
         </View>
       </View>
 
       {/* Transport Controls */}
       <View style={styles.transportContainer}>
         <TouchableOpacity
-          style={[styles.playButton, isPlaying && styles.playButtonActive]}
+          style={[styles.transportButton, isPlaying && styles.transportActive]}
           onPress={() => setIsPlaying(!isPlaying)}
         >
-          <Ionicons name={isPlaying ? "pause" : "play"} size={32} color="#fff" />
+          <View style={styles.transportIcon}>
+            <Ionicons name={isPlaying ? "pause" : "play"} size={20} color="#ff4500" />
+          </View>
+          <Text style={styles.transportLabel}>{isPlaying ? 'Pause' : 'Play'}</Text>
         </TouchableOpacity>
         
+        <View style={styles.bpmContainer}>
+          <CrossIcon size={20} color="#ffcd56" />
+          <Text style={styles.bpmValue}>{bpm}</Text>
+          <Text style={styles.bpmLabel}>BPM</Text>
+        </View>
+        
         <TouchableOpacity
-          style={styles.stopButton}
+          style={styles.transportButton}
           onPress={() => {
             setIsPlaying(false);
             setCurrentStep(0);
           }}
         >
-          <Ionicons name="stop" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <View style={styles.bpmContainer}>
-          <Text style={styles.bpmLabel}>BPM</Text>
-          <Text style={styles.bpmValue}>{bpm}</Text>
-          <View style={styles.bpmControls}>
-            <TouchableOpacity
-              style={styles.bpmButton}
-              onPress={() => setBpm(Math.max(60, bpm - 5))}
-            >
-              <Ionicons name="remove" size={16} color="#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.bpmButton}
-              onPress={() => setBpm(Math.min(200, bpm + 5))}
-            >
-              <Ionicons name="add" size={16} color="#fff" />
-            </TouchableOpacity>
+          <View style={styles.transportIcon}>
+            <View style={styles.stopButton} />
           </View>
-        </View>
+          <Text style={styles.transportLabel}>Stop</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Step Sequencer Grid */}
@@ -221,16 +240,19 @@ export default function BeatSequencer() {
 
         {drumPads.map(drum => (
           <View key={drum.id} style={styles.sequencerRow}>
-            <TouchableOpacity
-              style={[
-                styles.drumLabel,
-                { backgroundColor: drum.color },
-                selectedDrum === drum.id && styles.drumLabelSelected
-              ]}
-              onPress={() => handleDrumPadPress(drum.id)}
-            >
-              <Text style={styles.drumLabelText}>{drum.name}</Text>
-            </TouchableOpacity>
+            <View style={styles.drumLabelContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.drumLabel,
+                  { backgroundColor: drum.color },
+                  selectedDrum === drum.id && styles.drumLabelSelected
+                ]}
+                onPress={() => setSelectedDrum(drum.id)}
+              >
+                <Text style={styles.drumLabelText}>{drum.name}</Text>
+              </TouchableOpacity>
+              <Text style={styles.sacredName}>{drum.sacredName}</Text>
+            </View>
             
             <View style={styles.stepsRow}>
               {Array(16).fill(null).map((_, stepIndex) => (
@@ -241,60 +263,33 @@ export default function BeatSequencer() {
                     { backgroundColor: getStepColor(stepIndex, drum.id) }
                   ]}
                   onPress={() => toggleStep(stepIndex, drum.id)}
-                />
+                >
+                  {pattern[stepIndex][drum.id as keyof SequenceStep] && (
+                    <CrossIcon size={12} color="#ffffff" />
+                  )}
+                </TouchableOpacity>
               ))}
             </View>
           </View>
         ))}
       </ScrollView>
 
-      {/* Drum Pads */}
-      <View style={styles.drumPadsContainer}>
-        <Text style={styles.drumPadsTitle}>Drum Pads</Text>
-        <View style={styles.drumPadsGrid}>
-          {drumPads.map(drum => (
-            <TouchableOpacity
-              key={drum.id}
-              style={[
-                styles.drumPad,
-                { backgroundColor: drum.color },
-                selectedDrum === drum.id && styles.drumPadSelected
-              ]}
-              onPress={() => handleDrumPadPress(drum.id)}
-            >
-              <Text style={styles.drumPadText}>{drum.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      {/* Pattern Controls */}
-      <View style={styles.patternControls}>
-        <TouchableOpacity style={styles.patternButton} onPress={clearPattern}>
-          <Ionicons name="trash" size={16} color="#ef4444" />
-          <Text style={[styles.patternButtonText, { color: '#ef4444' }]}>Clear</Text>
+      {/* Divine Controls Footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.footerButton}>
+          <CrossIcon size={16} color="#ff4500" />
+          <Text style={styles.footerButtonText}>Bless Pattern</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.patternButton} onPress={randomizePattern}>
-          <Ionicons name="shuffle" size={16} color="#ffffff" />
-          <Text style={styles.patternButtonText}>Random</Text>
+        <TouchableOpacity style={styles.footerButton}>
+          <Ionicons name="refresh" size={16} color="#ffffff" />
+          <Text style={styles.footerButtonText}>Sanctify</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.patternButton}>
-          <Ionicons name="copy" size={16} color="#ffffff" />
-          <Text style={styles.patternButtonText}>Copy</Text>
+        <TouchableOpacity style={styles.footerButton}>
+          <Ionicons name="heart" size={16} color="#dc143c" />
+          <Text style={styles.footerButtonText}>Sacred Heart</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.patternButton}>
-          <Ionicons name="clipboard" size={16} color="#ffffff" />
-          <Text style={styles.patternButtonText}>Paste</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Volume Control */}
-      <View style={styles.volumeContainer}>
-        <Ionicons name="volume-medium" size={20} color="#ffffff" />
-        <Text style={styles.volumeText}>Master: {Math.round(volume * 100)}%</Text>
       </View>
     </SafeAreaView>
   );
@@ -305,121 +300,137 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1a0f0f',
   },
+  backgroundDecoration: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 16,
     paddingTop: 20,
-    backgroundColor: '#4a1a1a',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    backgroundColor: '#2a1a1a',
+    zIndex: 10,
   },
   backButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 69, 0, 0.2)',
-    borderRadius: 12,
+    padding: 8,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   title: {
     color: '#ffffff',
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '600',
     letterSpacing: 0.5,
   },
-  headerButtons: {
-    flexDirection: 'row',
-    gap: 8,
+  menuButton: {
+    padding: 8,
   },
-  headerButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 69, 0, 0.2)',
-    borderRadius: 12,
+  menuLines: {
+    gap: 3,
+  },
+  menuLine: {
+    width: 20,
+    height: 2,
+    backgroundColor: '#ffffff',
+    borderRadius: 1,
+  },
+  progressContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#2a1a1a',
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: '#4a2a2a',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#ff4500',
+    borderRadius: 2,
   },
   transportContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     padding: 20,
-    backgroundColor: '#2a1212',
-    gap: 20,
+    backgroundColor: '#2a1a1a',
+    borderBottomWidth: 1,
+    borderBottomColor: '#4a2a2a',
+    zIndex: 5,
   },
-  playButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#ff4500',
+  transportButton: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  transportIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(74, 42, 42, 0.8)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#ff4500',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
+    borderWidth: 2,
+    borderColor: '#ff4500',
   },
-  playButtonActive: {
-    backgroundColor: '#ff8c00',
+  transportActive: {
+    opacity: 1,
   },
-  stopButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(139, 69, 19, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 69, 0, 0.1)',
+  transportLabel: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '500',
   },
   bpmContainer: {
     alignItems: 'center',
+    gap: 4,
+  },
+  bpmValue: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: '700',
   },
   bpmLabel: {
     color: '#ffb366',
     fontSize: 12,
-    marginBottom: 4,
     fontWeight: '600',
   },
-  bpmValue: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  bpmControls: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  bpmButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(139, 69, 19, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 69, 0, 0.1)',
+  stopButton: {
+    width: 16,
+    height: 4,
+    backgroundColor: '#ff4500',
+    borderRadius: 2,
   },
   sequencerContainer: {
     flex: 1,
     padding: 16,
+    zIndex: 5,
   },
   stepNumbers: {
     flexDirection: 'row',
-    marginBottom: 12,
-    paddingLeft: 80,
+    marginBottom: 16,
+    paddingLeft: 120,
+    gap: 2,
   },
   stepNumber: {
-    width: 30,
+    width: 28,
     height: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 2,
+    borderRadius: 4,
   },
   stepNumberActive: {
     backgroundColor: '#ff4500',
-    borderRadius: 4,
   },
   stepNumberText: {
     color: '#cc6633',
@@ -433,15 +444,18 @@ const styles = StyleSheet.create({
   sequencerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  drumLabelContainer: {
+    width: 110,
+    marginRight: 8,
   },
   drumLabel: {
-    width: 70,
     height: 32,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 8,
+    marginBottom: 4,
   },
   drumLabelSelected: {
     borderWidth: 2,
@@ -451,94 +465,45 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 11,
     fontWeight: '700',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+  },
+  sacredName: {
+    color: '#ffb366',
+    fontSize: 9,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
   stepsRow: {
     flexDirection: 'row',
     flex: 1,
+    gap: 2,
   },
   stepButton: {
-    width: 30,
+    width: 28,
     height: 32,
-    marginRight: 2,
-    borderRadius: 4,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: 'rgba(255, 69, 0, 0.2)',
-  },
-  drumPadsContainer: {
-    backgroundColor: '#2a1212',
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 69, 0, 0.2)',
-  },
-  drumPadsTitle: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 16,
-    letterSpacing: 0.3,
-  },
-  drumPadsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  drumPad: {
-    width: (screenWidth - 88) / 4,
-    height: 64,
-    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
   },
-  drumPadSelected: {
-    borderWidth: 2,
-    borderColor: '#ffffff',
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-  },
-  drumPadText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '700',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  patternControls: {
+  footer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     padding: 16,
     backgroundColor: '#2a1a1a',
+    borderTopWidth: 1,
+    borderTopColor: '#4a2a2a',
   },
-  patternButton: {
-    alignItems: 'center',
-    padding: 8,
-    gap: 4,
-  },
-  patternButtonText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  volumeContainer: {
+  footerButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    backgroundColor: '#2a1212',
-    gap: 8,
+    gap: 6,
+    padding: 8,
   },
-  volumeText: {
+  footerButtonText: {
     color: '#ffffff',
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
   },
 });

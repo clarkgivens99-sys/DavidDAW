@@ -11,14 +11,16 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import Svg, { Path, Circle, Line, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 interface SamplePack {
   id: string;
   name: string;
-  category: 'drums' | 'loops' | 'vocals' | 'instruments' | 'fx';
+  category: 'drums' | 'loops' | 'vocals' | 'instruments' | 'fx' | 'blessed';
   samples: Sample[];
   color: string;
   description: string;
+  sacredTheme: string;
 }
 
 interface Sample {
@@ -28,90 +30,111 @@ interface Sample {
   bpm?: number;
   key?: string;
   tags: string[];
+  blessing: string; // Religious blessing for each sample
 }
 
 const samplePacks: SamplePack[] = [
   {
-    id: 'hip-hop-drums',
-    name: 'Hip Hop Drums',
+    id: 'gospel-drums',
+    name: 'Gospel Foundation',
     category: 'drums',
     color: '#ff4444',
-    description: 'Classic boom-bap and trap drum samples',
+    description: 'Holy rhythms blessed with divine power',
+    sacredTheme: 'Rock of Ages',
     samples: [
-      { id: 'hh-kick-01', name: 'Deep Kick', duration: 1.2, tags: ['kick', 'deep', 'punchy'] },
-      { id: 'hh-kick-02', name: 'Trap Kick', duration: 0.8, tags: ['kick', 'trap', '808'] },
-      { id: 'hh-snare-01', name: 'Crispy Snare', duration: 0.6, tags: ['snare', 'crisp', 'boom-bap'] },
-      { id: 'hh-snare-02', name: 'Layered Snare', duration: 0.9, tags: ['snare', 'layered', 'wide'] },
-      { id: 'hh-hihat-01', name: 'Closed Hat', duration: 0.2, tags: ['hihat', 'closed', 'tight'] },
-      { id: 'hh-hihat-02', name: 'Open Hat', duration: 0.8, tags: ['hihat', 'open', 'sizzle'] },
+      { id: 'gd-kick-01', name: 'Cornerstone Kick', duration: 1.2, tags: ['kick', 'deep', 'foundation'], blessing: 'Upon this rock I build' },
+      { id: 'gd-snare-01', name: 'Truth Snare', duration: 0.6, tags: ['snare', 'crisp', 'truth'], blessing: 'The truth shall set free' },
+      { id: 'gd-hihat-01', name: 'Grace Hat', duration: 0.2, tags: ['hihat', 'grace', 'gentle'], blessing: 'Amazing grace how sweet' },
     ]
   },
   {
-    id: 'trap-loops',
-    name: 'Trap Loops',
+    id: 'worship-loops',
+    name: 'Heavenly Melodies',
     category: 'loops',
     color: '#ff8844',
-    description: 'Dark and melodic trap loops',
+    description: 'Celestial harmonies from above',
+    sacredTheme: 'Angelic Chorus',
     samples: [
-      { id: 'tl-melody-01', name: 'Dark Bell Loop', duration: 8.0, bpm: 140, key: 'Am', tags: ['melody', 'bells', 'dark'] },
-      { id: 'tl-melody-02', name: 'Flute Melody', duration: 16.0, bpm: 130, key: 'F#m', tags: ['melody', 'flute', 'atmospheric'] },
-      { id: 'tl-bass-01', name: '808 Bass Loop', duration: 4.0, bpm: 140, key: 'A', tags: ['bass', '808', 'sub'] },
-      { id: 'tl-perc-01', name: 'Trap Percussion', duration: 8.0, bpm: 140, tags: ['percussion', 'rhythm', 'trap'] },
+      { id: 'wl-melody-01', name: 'Angels Singing', duration: 8.0, bpm: 120, key: 'C', tags: ['melody', 'angels', 'praise'], blessing: 'Holy holy holy Lord' },
+      { id: 'wl-bass-01', name: 'Foundation Bass', duration: 4.0, bpm: 120, key: 'C', tags: ['bass', 'foundation', 'solid'], blessing: 'Built upon solid rock' },
     ]
   },
   {
-    id: 'house-loops',
-    name: 'House Loops',
-    category: 'loops',
-    color: '#44ff88',
-    description: 'Pumping house and techno loops',
-    samples: [
-      { id: 'hl-bass-01', name: 'Pumping Bassline', duration: 8.0, bpm: 128, key: 'Gm', tags: ['bass', 'house', 'groovy'] },
-      { id: 'hl-pad-01', name: 'Ethereal Pad', duration: 16.0, bpm: 128, key: 'Cm', tags: ['pad', 'atmospheric', 'warm'] },
-      { id: 'hl-lead-01', name: 'Acid Lead', duration: 4.0, bpm: 128, key: 'Fm', tags: ['lead', 'acid', 'resonant'] },
-      { id: 'hl-perc-01', name: 'Latin Percussion', duration: 8.0, bpm: 128, tags: ['percussion', 'latin', 'organic'] },
-    ]
-  },
-  {
-    id: 'vocal-chops',
-    name: 'Vocal Chops',
+    id: 'praise-vocals',
+    name: 'Voices of Heaven',
     category: 'vocals',
     color: '#8844ff',
-    description: 'Processed vocal samples and chops',
+    description: 'Divine vocal expressions',
+    sacredTheme: 'Hallelujah Chorus',
     samples: [
-      { id: 'vc-chop-01', name: 'Soul Vocal Chop', duration: 2.0, bpm: 120, key: 'C', tags: ['vocal', 'soul', 'chopped'] },
-      { id: 'vc-chop-02', name: 'R&B Vocal Run', duration: 4.0, bpm: 90, key: 'Bb', tags: ['vocal', 'rnb', 'melodic'] },
-      { id: 'vc-phrase-01', name: 'Gospel Phrase', duration: 8.0, bpm: 110, key: 'F', tags: ['vocal', 'gospel', 'harmony'] },
-      { id: 'vc-texture-01', name: 'Vocal Texture', duration: 12.0, bpm: 100, tags: ['vocal', 'texture', 'ambient'] },
+      { id: 'pv-chop-01', name: 'Hallelujah Call', duration: 2.0, bpm: 120, key: 'G', tags: ['vocal', 'praise', 'hallelujah'], blessing: 'Praise the Lord almighty' },
+      { id: 'pv-phrase-01', name: 'Worship Phrase', duration: 4.0, bpm: 100, key: 'D', tags: ['vocal', 'worship', 'reverent'], blessing: 'Come let us worship Him' },
     ]
   },
   {
-    id: 'organic-drums',
-    name: 'Organic Drums',
-    category: 'drums',
-    color: '#44ffff',
-    description: 'Live recorded acoustic drum samples',
+    id: 'blessed-instruments',
+    name: 'Sacred Instruments',
+    category: 'instruments',
+    color: '#44ff88',
+    description: 'Instruments consecrated for worship',
+    sacredTheme: 'Temple Orchestra',
     samples: [
-      { id: 'od-kick-01', name: 'Live Kick', duration: 1.5, tags: ['kick', 'acoustic', 'punchy'] },
-      { id: 'od-snare-01', name: 'Jazz Snare', duration: 0.8, tags: ['snare', 'jazz', 'natural'] },
-      { id: 'od-rim-01', name: 'Rim Shot', duration: 0.3, tags: ['rim', 'crack', 'sharp'] },
-      { id: 'od-crash-01', name: 'Crash Cymbal', duration: 3.2, tags: ['crash', 'cymbal', 'bright'] },
-    ]
-  },
-  {
-    id: 'sound-fx',
-    name: 'Sound FX',
-    category: 'fx',
-    color: '#ff44ff',
-    description: 'Risers, drops, and sound effects',
-    samples: [
-      { id: 'fx-riser-01', name: 'White Noise Riser', duration: 4.0, tags: ['riser', 'build', 'tension'] },
-      { id: 'fx-drop-01', name: 'Impact Drop', duration: 2.0, tags: ['drop', 'impact', 'heavy'] },
-      { id: 'fx-sweep-01', name: 'Filter Sweep', duration: 8.0, tags: ['sweep', 'filter', 'transition'] },
-      { id: 'fx-glitch-01', name: 'Digital Glitch', duration: 1.0, tags: ['glitch', 'digital', 'stutter'] },
+      { id: 'bi-organ-01', name: 'Cathedral Organ', duration: 8.0, bpm: 80, key: 'Fm', tags: ['organ', 'cathedral', 'majestic'], blessing: 'Make a joyful noise' },
+      { id: 'bi-harp-01', name: 'Heavenly Harp', duration: 4.0, bpm: 90, key: 'C', tags: ['harp', 'heavenly', 'peaceful'], blessing: 'Angels play their harps' },
     ]
   }
 ];
+
+// Cross SVG Component
+const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Defs>
+      <LinearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor={color} stopOpacity="1" />
+        <Stop offset="100%" stopColor="#ffcd56" stopOpacity="0.8" />
+      </LinearGradient>
+    </Defs>
+    <Path
+      d="M12 2L12 8L18 8L18 10L12 10L12 14L18 14L18 16L12 16L12 22L10 22L10 16L4 16L4 14L10 14L10 10L4 10L4 8L10 8L10 2L12 2Z"
+      fill="url(#crossGradient)"
+      stroke={color}
+      strokeWidth="0.5"
+    />
+  </Svg>
+);
+
+// Sacred Background Graphics
+const SacredBackground: React.FC<{ width: number; height: number }> = ({ width, height }) => (
+  <Svg width={width} height={height} style={styles.backgroundDecoration}>
+    <Defs>
+      <LinearGradient id="sacredGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="#ff4500" stopOpacity="0.1" />
+        <Stop offset="50%" stopColor="#ffcd56" stopOpacity="0.05" />
+        <Stop offset="100%" stopColor="#ff4500" stopOpacity="0.1" />
+      </LinearGradient>
+    </Defs>
+    
+    {/* Large Cross */}
+    <Path
+      d="M180 50L180 20L190 20L190 50L220 50L220 60L190 60L190 90L180 90L180 60L150 60L150 50L180 50Z"
+      fill="url(#sacredGradient)"
+    />
+    
+    {/* Dove silhouette */}
+    <Path
+      d="M100 200 Q120 190 140 200 Q130 210 120 205 Q110 210 100 200Z"
+      fill="url(#sacredGradient)"
+    />
+    
+    {/* Musical notes with crosses */}
+    <Circle cx="80" cy="300" r="4" fill="url(#sacredGradient)" />
+    <Line x1="84" y1="300" x2="84" y2="280" stroke="#ff4500" strokeWidth="2" opacity="0.2" />
+    <Path d="M86 278L86 282L90 280L90 276L86 278Z" fill="url(#sacredGradient)" />
+    
+    <Circle cx="320" cy="150" r="3" fill="url(#sacredGradient)" />
+    <Line x1="323" y1="150" x2="323" y2="135" stroke="#ff4500" strokeWidth="1.5" opacity="0.2" />
+  </Svg>
+);
 
 export default function SampleLibrary() {
   const router = useRouter();
@@ -120,30 +143,21 @@ export default function SampleLibrary() {
   const [selectedPack, setSelectedPack] = useState<SamplePack | null>(null);
 
   const categories = [
-    { id: 'all', name: 'All', icon: 'grid' },
-    { id: 'drums', name: 'Drums', icon: 'radio-button-on' },
-    { id: 'loops', name: 'Loops', icon: 'repeat' },
-    { id: 'vocals', name: 'Vocals', icon: 'mic' },
-    { id: 'instruments', name: 'Instruments', icon: 'musical-notes' },
-    { id: 'fx', name: 'FX', icon: 'flash' },
+    { id: 'all', name: 'All Blessed', icon: 'grid' },
+    { id: 'drums', name: 'Foundation', icon: 'radio-button-on' },
+    { id: 'loops', name: 'Melodies', icon: 'repeat' },
+    { id: 'vocals', name: 'Voices', icon: 'mic' },
+    { id: 'instruments', name: 'Sacred', icon: 'musical-notes' },
+    { id: 'blessed', name: 'Divine', icon: 'heart' },
   ];
 
   const filteredPacks = samplePacks.filter(pack => {
     const matchesCategory = selectedCategory === 'all' || pack.category === selectedCategory;
     const matchesSearch = pack.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         pack.description.toLowerCase().includes(searchQuery.toLowerCase());
+                         pack.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         pack.sacredTheme.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-
-  const playSample = (sample: Sample) => {
-    console.log(`Playing sample: ${sample.name}`);
-    // In a real implementation, you would play the actual audio sample
-  };
-
-  const loadSampleToPad = (sample: Sample) => {
-    console.log(`Loading sample to pad: ${sample.name}`);
-    // Logic to load sample to drum pad or track
-  };
 
   const SamplePackCard = ({ pack }: { pack: SamplePack }) => (
     <TouchableOpacity
@@ -151,25 +165,33 @@ export default function SampleLibrary() {
       onPress={() => setSelectedPack(pack)}
     >
       <View style={styles.packHeader}>
-        <Text style={styles.packName}>{pack.name}</Text>
+        <View style={styles.packTitleContainer}>
+          <CrossIcon size={16} color={pack.color} />
+          <Text style={styles.packName}>{pack.name}</Text>
+        </View>
         <View style={[styles.categoryBadge, { backgroundColor: pack.color }]}>
           <Text style={styles.categoryBadgeText}>{pack.category.toUpperCase()}</Text>
         </View>
       </View>
       <Text style={styles.packDescription}>{pack.description}</Text>
-      <Text style={styles.sampleCount}>{pack.samples.length} samples</Text>
+      <Text style={styles.sacredTheme}>Sacred Theme: {pack.sacredTheme}</Text>
+      <Text style={styles.sampleCount}>{pack.samples.length} blessed samples</Text>
     </TouchableOpacity>
   );
 
   const SampleItem = ({ sample }: { sample: Sample }) => (
     <View style={styles.sampleItem}>
       <View style={styles.sampleInfo}>
-        <Text style={styles.sampleName}>{sample.name}</Text>
+        <View style={styles.sampleHeader}>
+          <CrossIcon size={12} color="#ff4500" />
+          <Text style={styles.sampleName}>{sample.name}</Text>
+        </View>
         <View style={styles.sampleDetails}>
           <Text style={styles.sampleDuration}>{sample.duration.toFixed(1)}s</Text>
           {sample.bpm && <Text style={styles.sampleBpm}>{sample.bpm} BPM</Text>}
           {sample.key && <Text style={styles.sampleKey}>{sample.key}</Text>}
         </View>
+        <Text style={styles.sampleBlessing}>"{sample.blessing}"</Text>
         <View style={styles.sampleTags}>
           {sample.tags.slice(0, 3).map(tag => (
             <Text key={tag} style={styles.sampleTag}>#{tag}</Text>
@@ -178,17 +200,11 @@ export default function SampleLibrary() {
       </View>
       
       <View style={styles.sampleControls}>
-        <TouchableOpacity
-          style={styles.sampleButton}
-          onPress={() => playSample(sample)}
-        >
+        <TouchableOpacity style={styles.sampleButton}>
           <Ionicons name="play" size={16} color="#fff" />
         </TouchableOpacity>
         
-        <TouchableOpacity
-          style={[styles.sampleButton, styles.loadButton]}
-          onPress={() => loadSampleToPad(sample)}
-        >
+        <TouchableOpacity style={[styles.sampleButton, styles.loadButton]}>
           <Ionicons name="add" size={16} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -198,21 +214,34 @@ export default function SampleLibrary() {
   if (selectedPack) {
     return (
       <SafeAreaView style={styles.container}>
-        {/* Pack Header */}
+        <SacredBackground width={400} height={800} />
+        
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setSelectedPack(null)} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
+            <Ionicons name="chevron-back" size={28} color="#fff" />
           </TouchableOpacity>
-          <View style={styles.packTitleContainer}>
-            <Text style={styles.title}>{selectedPack.name}</Text>
-            <Text style={styles.subtitle}>{selectedPack.samples.length} samples</Text>
+          <View style={styles.titleContainer}>
+            <CrossIcon size={20} color="#ff4500" />
+            <View style={styles.packTitleContainer}>
+              <Text style={styles.title}>{selectedPack.name}</Text>
+              <Text style={styles.subtitle}>{selectedPack.samples.length} blessed samples</Text>
+            </View>
           </View>
-          <TouchableOpacity style={styles.headerButton}>
-            <Ionicons name="download" size={20} color="#fff" />
+          <TouchableOpacity style={styles.menuButton}>
+            <View style={styles.menuLines}>
+              <View style={styles.menuLine} />
+              <View style={styles.menuLine} />
+              <View style={styles.menuLine} />
+            </View>
           </TouchableOpacity>
         </View>
 
-        {/* Samples List */}
+        <View style={styles.progressContainer}>
+          <View style={styles.progressBar}>
+            <View style={styles.progressFill} />
+          </View>
+        </View>
+
         <FlatList
           data={selectedPack.samples}
           keyExtractor={item => item.id}
@@ -226,28 +255,46 @@ export default function SampleLibrary() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <SacredBackground width={400} height={800} />
+      
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons name="chevron-back" size={28} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.title}>Sample Library</Text>
-        <TouchableOpacity style={styles.headerButton}>
-          <Ionicons name="cloud-download" size={20} color="#fff" />
+        <View style={styles.titleContainer}>
+          <CrossIcon size={24} color="#ff4500" />
+          <Text style={styles.title}>Sacred Library</Text>
+          <CrossIcon size={24} color="#ff4500" />
+        </View>
+        <TouchableOpacity style={styles.menuButton}>
+          <View style={styles.menuLines}>
+            <View style={styles.menuLine} />
+            <View style={styles.menuLine} />
+            <View style={styles.menuLine} />
+          </View>
         </TouchableOpacity>
+      </View>
+
+      {/* Progress Bar */}
+      <View style={styles.progressContainer}>
+        <View style={styles.progressBar}>
+          <View style={styles.progressFill} />
+        </View>
       </View>
 
       {/* Search */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color="#666" />
+          <Ionicons name="search" size={20} color="#cc6633" />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search samples and packs..."
-            placeholderTextColor="#666"
+            placeholder="Search blessed samples..."
+            placeholderTextColor="#cc6633"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
+          <CrossIcon size={16} color="#ff4500" />
         </View>
       </View>
 
@@ -265,7 +312,7 @@ export default function SampleLibrary() {
             <Ionicons 
               name={category.icon as any} 
               size={16} 
-              color={selectedCategory === category.id ? '#1a1a1a' : '#fff'} 
+              color={selectedCategory === category.id ? '#ffffff' : '#ffb366'} 
             />
             <Text style={[
               styles.categoryButtonText,
@@ -287,21 +334,18 @@ export default function SampleLibrary() {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* Quick Actions */}
-      <View style={styles.quickActions}>
-        <TouchableOpacity style={styles.quickActionButton}>
+      {/* Sacred Footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.footerButton}>
           <Ionicons name="mic" size={20} color="#fff" />
-          <Text style={styles.quickActionText}>Record</Text>
+          <Text style={styles.footerButtonText}>Record Praise</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.quickActionButton}>
-          <Ionicons name="folder" size={20} color="#fff" />
-          <Text style={styles.quickActionText}>Import</Text>
-        </TouchableOpacity>
+        <CrossIcon size={32} color="#ff4500" />
         
-        <TouchableOpacity style={styles.quickActionButton}>
-          <Ionicons name="create" size={20} color="#fff" />
-          <Text style={styles.quickActionText}>My Samples</Text>
+        <TouchableOpacity style={styles.footerButton}>
+          <Ionicons name="heart" size={20} color="#dc143c" />
+          <Text style={styles.footerButtonText}>My Blessed</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -313,28 +357,35 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1a0f0f',
   },
+  backgroundDecoration: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 16,
     paddingTop: 20,
-    backgroundColor: '#4a1a1a',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    backgroundColor: '#2a1a1a',
+    zIndex: 10,
   },
   backButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 69, 0, 0.2)',
-    borderRadius: 12,
+    padding: 8,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   title: {
     color: '#ffffff',
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '600',
     letterSpacing: 0.5,
   },
   subtitle: {
@@ -345,19 +396,44 @@ const styles = StyleSheet.create({
   packTitleContainer: {
     alignItems: 'center',
   },
-  headerButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 69, 0, 0.2)',
-    borderRadius: 12,
+  menuButton: {
+    padding: 8,
+  },
+  menuLines: {
+    gap: 3,
+  },
+  menuLine: {
+    width: 20,
+    height: 2,
+    backgroundColor: '#ffffff',
+    borderRadius: 1,
+  },
+  progressContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#2a1a1a',
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: '#4a2a2a',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    width: '40%',
+    backgroundColor: '#ff4500',
+    borderRadius: 2,
   },
   searchContainer: {
     padding: 16,
-    backgroundColor: '#2a1212',
+    backgroundColor: '#2a1a1a',
+    zIndex: 5,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a1a1a',
+    backgroundColor: 'rgba(42, 26, 26, 0.8)',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -372,19 +448,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   categoriesContainer: {
-    backgroundColor: '#2a1212',
+    backgroundColor: '#2a1a1a',
     paddingHorizontal: 16,
     paddingBottom: 16,
+    zIndex: 5,
   },
   categoryButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     marginRight: 12,
     backgroundColor: 'rgba(139, 69, 19, 0.4)',
-    borderRadius: 24,
-    gap: 8,
+    borderRadius: 20,
+    gap: 6,
     borderWidth: 1,
     borderColor: 'rgba(255, 69, 0, 0.1)',
   },
@@ -393,7 +470,7 @@ const styles = StyleSheet.create({
     borderColor: '#ffffff',
   },
   categoryButtonText: {
-    color: '#ffffff',
+    color: '#ffb366',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -403,21 +480,19 @@ const styles = StyleSheet.create({
   },
   packsList: {
     flex: 1,
+    zIndex: 5,
   },
   packsListContent: {
     padding: 16,
   },
   packCard: {
-    backgroundColor: '#2a1a1a',
-    borderRadius: 16,
-    padding: 20,
+    backgroundColor: 'rgba(42, 26, 26, 0.9)',
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 16,
     borderLeftWidth: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 69, 0, 0.2)',
   },
   packHeader: {
     flexDirection: 'row',
@@ -427,27 +502,34 @@ const styles = StyleSheet.create({
   },
   packName: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     letterSpacing: 0.3,
+    marginLeft: 8,
   },
   categoryBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   categoryBadgeText: {
     color: '#ffffff',
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '700',
     letterSpacing: 0.5,
   },
   packDescription: {
     color: '#ffb366',
     fontSize: 14,
-    marginBottom: 12,
+    marginBottom: 8,
     lineHeight: 20,
     fontWeight: '500',
+  },
+  sacredTheme: {
+    color: '#ff4500',
+    fontSize: 12,
+    fontStyle: 'italic',
+    marginBottom: 8,
   },
   sampleCount: {
     color: '#cc6633',
@@ -456,6 +538,7 @@ const styles = StyleSheet.create({
   },
   samplesList: {
     flex: 1,
+    zIndex: 5,
   },
   samplesListContent: {
     padding: 16,
@@ -463,7 +546,7 @@ const styles = StyleSheet.create({
   sampleItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a1a1a',
+    backgroundColor: 'rgba(42, 26, 26, 0.9)',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -473,17 +556,22 @@ const styles = StyleSheet.create({
   sampleInfo: {
     flex: 1,
   },
+  sampleHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
+  },
   sampleName: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 6,
     letterSpacing: 0.3,
   },
   sampleDetails: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
     gap: 16,
   },
   sampleDuration: {
@@ -500,6 +588,12 @@ const styles = StyleSheet.create({
     color: '#dc143c',
     fontSize: 12,
     fontWeight: '600',
+  },
+  sampleBlessing: {
+    color: '#ffcd56',
+    fontSize: 11,
+    fontStyle: 'italic',
+    marginBottom: 6,
   },
   sampleTags: {
     flexDirection: 'row',
@@ -529,19 +623,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff4500',
     borderColor: '#ffffff',
   },
-  quickActions: {
+  footer: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-around',
     padding: 20,
-    backgroundColor: '#2a1212',
+    backgroundColor: '#2a1a1a',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 69, 0, 0.2)',
   },
-  quickActionButton: {
+  footerButton: {
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
-  quickActionText: {
+  footerButtonText: {
     color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
