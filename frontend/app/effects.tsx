@@ -266,7 +266,8 @@ export default function EffectsRack() {
     ));
   };
 
-  const EffectCard = ({ effect }: { effect: Effect }) => (
+  const EffectCard = ({ effect }: { effect: Effect }) => {
+    return (
     <View style={[styles.effectCard, effect.enabled && styles.effectCardActive]}>
       <View style={styles.effectHeader}>
         <View style={styles.effectTitleContainer}>
