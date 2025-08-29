@@ -526,7 +526,7 @@ const NavigationBar: React.FC = () => {
         style={styles.navButton}
         onPress={() => router.push('/effects')}
       >
-        <Ionicons name="options" size={20} color="#ffb366" />
+        <Ionicons name="options" size={20} color="#ffffff" />
         <Text style={[styles.navButtonText, styles.inactiveNavText]}>Effects</Text>
       </TouchableOpacity>
       
