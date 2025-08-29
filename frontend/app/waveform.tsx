@@ -259,7 +259,7 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({
               y={0}
               width={Math.max(0, playheadPosition)}
               height={waveformHeight}
-              fill="rgba(255, 69, 0, 0.2)"
+              fill="rgba(0, 255, 0, 0.2)"
             />
           )}
           
