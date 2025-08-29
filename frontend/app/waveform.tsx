@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   inactiveNavText: {
-    color: '#ffb366',
+    color: '#ffffff',
   },
   progressContainer: {
     paddingHorizontal: 16,
