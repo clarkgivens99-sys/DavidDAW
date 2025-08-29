@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://android-mixer.preview.emergentagent.com/api"
+BACKEND_URL = "https://praise-tracks-1.preview.emergentagent.com/api"
 TIMEOUT = 30
 
 class DAWAPITester:
