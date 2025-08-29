@@ -311,7 +311,7 @@ export default function SampleLibrary() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f1419',
+    backgroundColor: '#1a0f0f',
   },
   header: {
     flexDirection: 'row',
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     paddingTop: 20,
-    backgroundColor: '#1e2a4a',
+    backgroundColor: '#4a1a1a',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 69, 0, 0.2)',
     borderRadius: 12,
   },
   title: {
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   subtitle: {
-    color: '#a8bce8',
+    color: '#ffb366',
     fontSize: 12,
     fontWeight: '500',
   },
@@ -347,23 +347,23 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 69, 0, 0.2)',
     borderRadius: 12,
   },
   searchContainer: {
     padding: 16,
-    backgroundColor: '#162032',
+    backgroundColor: '#2a1212',
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a2332',
+    backgroundColor: '#2a1a1a',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     gap: 12,
     borderWidth: 1,
-    borderColor: 'rgba(74, 144, 226, 0.2)',
+    borderColor: 'rgba(255, 69, 0, 0.2)',
   },
   searchInput: {
     flex: 1,
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   categoriesContainer: {
-    backgroundColor: '#162032',
+    backgroundColor: '#2a1212',
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
@@ -382,14 +382,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginRight: 12,
-    backgroundColor: 'rgba(45, 74, 122, 0.4)',
+    backgroundColor: 'rgba(139, 69, 19, 0.4)',
     borderRadius: 24,
     gap: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 69, 0, 0.1)',
   },
   categoryButtonActive: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#ff4500',
     borderColor: '#ffffff',
   },
   categoryButtonText: {
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   packCard: {
-    backgroundColor: '#1a2332',
+    backgroundColor: '#2a1a1a',
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
@@ -443,14 +443,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   packDescription: {
-    color: '#a8bce8',
+    color: '#ffb366',
     fontSize: 14,
     marginBottom: 12,
     lineHeight: 20,
     fontWeight: '500',
   },
   sampleCount: {
-    color: '#6b7d9e',
+    color: '#cc6633',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -463,12 +463,12 @@ const styles = StyleSheet.create({
   sampleItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a2332',
+    backgroundColor: '#2a1a1a',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: 'rgba(74, 144, 226, 0.2)',
+    borderColor: 'rgba(255, 69, 0, 0.2)',
   },
   sampleInfo: {
     flex: 1,
@@ -487,17 +487,17 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   sampleDuration: {
-    color: '#10b981',
+    color: '#ff8c00',
     fontSize: 12,
     fontWeight: '600',
   },
   sampleBpm: {
-    color: '#f59e0b',
+    color: '#ff4500',
     fontSize: 12,
     fontWeight: '600',
   },
   sampleKey: {
-    color: '#4a90e2',
+    color: '#dc143c',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sampleTag: {
-    color: '#6b7d9e',
+    color: '#cc6633',
     fontSize: 10,
     fontWeight: '500',
   },
@@ -519,23 +519,23 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(45, 74, 122, 0.6)',
+    backgroundColor: 'rgba(139, 69, 19, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 69, 0, 0.1)',
   },
   loadButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#ff4500',
     borderColor: '#ffffff',
   },
   quickActions: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 20,
-    backgroundColor: '#162032',
+    backgroundColor: '#2a1212',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(74, 144, 226, 0.2)',
+    borderTopColor: 'rgba(255, 69, 0, 0.2)',
   },
   quickActionButton: {
     alignItems: 'center',
