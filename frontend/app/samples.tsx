@@ -85,20 +85,28 @@ const samplePacks: SamplePack[] = [
   }
 ];
 
-// Cross SVG Component
+// Cross SVG Component - Standard Christian Cross
 const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24">
     <Defs>
       <LinearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <Stop offset="0%" stopColor={color} stopOpacity="1" />
-        <Stop offset="100%" stopColor="#ffcd56" stopOpacity="0.8" />
+        <Stop offset="50%" stopColor="#ffcd56" stopOpacity="0.9" />
+        <Stop offset="100%" stopColor={color} stopOpacity="0.8" />
       </LinearGradient>
     </Defs>
-    <Path
-      d="M12 2L12 8L18 8L18 10L12 10L12 14L18 14L18 16L12 16L12 22L10 22L10 16L4 16L4 14L10 14L10 10L4 10L4 8L10 8L10 2L12 2Z"
-      fill="url(#crossGradient)"
-      stroke={color}
-      strokeWidth="0.5"
+    {/* Standard Christian Cross: one vertical line with one horizontal line at 2/3 height */}
+    <Line
+      x1="12" y1="3" x2="12" y2="21"
+      stroke="url(#crossGradient)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+    <Line
+      x1="6" y1="9" x2="18" y2="9"
+      stroke="url(#crossGradient)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
     />
   </Svg>
 );
@@ -115,10 +123,8 @@ const SacredBackground: React.FC<{ width: number; height: number }> = ({ width, 
     </Defs>
     
     {/* Large Cross */}
-    <Path
-      d="M180 50L180 20L190 20L190 50L220 50L220 60L190 60L190 90L180 90L180 60L150 60L150 50L180 50Z"
-      fill="url(#sacredGradient)"
-    />
+    <Line x1="200" y1="50" x2="200" y2="200" stroke="url(#sacredGradient)" strokeWidth="4" />
+    <Line x1="150" y1="100" x2="250" y2="100" stroke="url(#sacredGradient)" strokeWidth="4" />
     
     {/* Dove silhouette */}
     <Path
@@ -135,6 +141,54 @@ const SacredBackground: React.FC<{ width: number; height: number }> = ({ width, 
     <Line x1="323" y1="150" x2="323" y2="135" stroke="#ff4500" strokeWidth="1.5" opacity="0.2" />
   </Svg>
 );
+
+// Navigation Component
+const NavigationBar: React.FC = () => {
+  const router = useRouter();
+  
+  return (
+    <View style={styles.navigationBar}>
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/')}
+      >
+        <Ionicons name="recording" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Multitrack</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/effects')}
+      >
+        <Ionicons name="options" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Effects</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/sequencer')}
+      >
+        <Ionicons name="grid" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Beats</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={[styles.navButton, styles.activeNavButton]}
+      >
+        <Ionicons name="library" size={20} color="#ffffff" />
+        <Text style={styles.navButtonText}>Library</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/waveform')}
+      >
+        <Ionicons name="pulse" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Waveform</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 export default function SampleLibrary() {
   const router = useRouter();
@@ -216,29 +270,39 @@ export default function SampleLibrary() {
       <SafeAreaView style={styles.container}>
         <SacredBackground width={400} height={800} />
         
+        {/* Header with Graffiti Title */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => setSelectedPack(null)} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="#fff" />
-          </TouchableOpacity>
           <View style={styles.titleContainer}>
-            <CrossIcon size={20} color="#ff4500" />
-            <View style={styles.packTitleContainer}>
-              <Text style={styles.title}>{selectedPack.name}</Text>
-              <Text style={styles.subtitle}>{selectedPack.samples.length} blessed samples</Text>
+            <CrossIcon size={32} color="#ff4500" />
+            <View style={styles.titleTextContainer}>
+              <Text style={styles.mainTitle}>Gospel and Praise</Text>
+              <Text style={styles.subTitle}>D.A.W. To Worship Yahweh</Text>
             </View>
+            <CrossIcon size={32} color="#ff4500" />
           </View>
-          <TouchableOpacity style={styles.menuButton}>
-            <View style={styles.menuLines}>
-              <View style={styles.menuLine} />
-              <View style={styles.menuLine} />
-              <View style={styles.menuLine} />
-            </View>
-          </TouchableOpacity>
         </View>
+        
+        {/* Navigation Bar */}
+        <NavigationBar />
 
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
-            <View style={styles.progressFill} />
+            <View style={[styles.progressFill, { width: '75%' }]} />
+          </View>
+        </View>
+
+        {/* Pack Detail Header */}
+        <View style={styles.packDetailHeader}>
+          <TouchableOpacity onPress={() => setSelectedPack(null)} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </TouchableOpacity>
+          <View style={styles.packDetailTitle}>
+            <CrossIcon size={20} color="#ff4500" />
+            <View style={styles.packTitleContainer}>
+              <Text style={styles.packDetailName}>{selectedPack.name}</Text>
+              <Text style={styles.packDetailSubtitle}>{selectedPack.samples.length} blessed samples</Text>
+            </View>
+            <CrossIcon size={20} color="#ff4500" />
           </View>
         </View>
 
@@ -249,6 +313,13 @@ export default function SampleLibrary() {
           style={styles.samplesList}
           contentContainerStyle={styles.samplesListContent}
         />
+
+        {/* Sacred Footer */}
+        <View style={styles.sacredFooter}>
+          <CrossIcon size={24} color="#ffcd56" />
+          <Text style={styles.blessingText}>"Make a joyful noise unto the Lord"</Text>
+          <CrossIcon size={24} color="#ffcd56" />
+        </View>
       </SafeAreaView>
     );
   }
@@ -257,29 +328,25 @@ export default function SampleLibrary() {
     <SafeAreaView style={styles.container}>
       <SacredBackground width={400} height={800} />
       
-      {/* Header */}
+      {/* Header with Graffiti Title */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={28} color="#fff" />
-        </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <CrossIcon size={24} color="#ff4500" />
-          <Text style={styles.title}>Sacred Library</Text>
-          <CrossIcon size={24} color="#ff4500" />
-        </View>
-        <TouchableOpacity style={styles.menuButton}>
-          <View style={styles.menuLines}>
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
+          <CrossIcon size={32} color="#ff4500" />
+          <View style={styles.titleTextContainer}>
+            <Text style={styles.mainTitle}>Gospel and Praise</Text>
+            <Text style={styles.subTitle}>D.A.W. To Worship Yahweh</Text>
           </View>
-        </TouchableOpacity>
+          <CrossIcon size={32} color="#ff4500" />
+        </View>
       </View>
+      
+      {/* Navigation Bar */}
+      <NavigationBar />
 
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View style={styles.progressFill} />
+          <View style={[styles.progressFill, { width: '40%' }]} />
         </View>
       </View>
 
@@ -366,47 +433,106 @@ const styles = StyleSheet.create({
     zIndex: 0,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     paddingTop: 20,
     backgroundColor: '#2a1a1a',
     zIndex: 10,
   },
-  backButton: {
-    padding: 8,
-  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    gap: 12,
   },
-  title: {
+  titleTextContainer: {
+    alignItems: 'center',
+  },
+  mainTitle: {
     color: '#ffffff',
     fontSize: 20,
-    fontWeight: '600',
-    letterSpacing: 0.5,
+    fontWeight: '900',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    textShadowColor: '#ff4500',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 6,
+    fontStyle: 'italic',
   },
-  subtitle: {
-    color: '#ffb366',
+  subTitle: {
+    color: '#ffcd56',
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '800',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    textShadowColor: '#ff4500',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    fontStyle: 'italic',
+    marginTop: -2,
+  },
+  navigationBar: {
+    flexDirection: 'row',
+    backgroundColor: '#2a1a1a',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#4a2a2a',
+    zIndex: 10,
+  },
+  navButton: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    gap: 4,
+  },
+  activeNavButton: {
+    backgroundColor: 'rgba(255, 69, 0, 0.2)',
+    borderRadius: 8,
+  },
+  navButtonText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  inactiveNavText: {
+    color: '#ffb366',
+  },
+  backButton: {
+    padding: 8,
   },
   packTitleContainer: {
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
-  menuButton: {
-    padding: 8,
+  packDetailHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#2a1a1a',
+    borderBottomWidth: 1,
+    borderBottomColor: '#4a2a2a',
+    zIndex: 5,
   },
-  menuLines: {
-    gap: 3,
+  packDetailTitle: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
   },
-  menuLine: {
-    width: 20,
-    height: 2,
-    backgroundColor: '#ffffff',
-    borderRadius: 1,
+  packDetailName: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  packDetailSubtitle: {
+    color: '#ffb366',
+    fontSize: 12,
+    fontWeight: '500',
   },
   progressContainer: {
     paddingHorizontal: 16,
@@ -421,7 +547,6 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    width: '40%',
     backgroundColor: '#ff4500',
     borderRadius: 2,
   },
@@ -631,6 +756,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2a1a1a',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 69, 0, 0.2)',
+    zIndex: 5,
   },
   footerButton: {
     alignItems: 'center',
@@ -640,5 +766,23 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
+  },
+  sacredFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#2a1a1a',
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#4a2a2a',
+    zIndex: 5,
+  },
+  blessingText: {
+    color: '#ffcd56',
+    fontSize: 12,
+    fontStyle: 'italic',
+    fontWeight: '500',
+    letterSpacing: 0.3,
   },
 });
