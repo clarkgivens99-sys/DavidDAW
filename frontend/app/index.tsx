@@ -14,7 +14,7 @@ import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
-import Svg, { Path, Line, Defs, LinearGradient, Stop } from 'react-native-svg';
+import Svg, { Path, Line, Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
 
@@ -68,7 +68,6 @@ const generateWaveformData = (instrument: string) => {
     const t = i / length;
     let amplitude = 0;
     
-    // Different waveform patterns based on instrument
     switch (instrument) {
       case 'guitar':
         amplitude = Math.sin(t * 12) * Math.exp(-t * 2) * (0.6 + Math.random() * 0.4);
@@ -99,7 +98,7 @@ const useDAWStore = create<DAWStore>((set, get) => ({
   tracks: [
     {
       id: 'track_1',
-      name: 'Lead Guitar',
+      name: 'Praise Guitar',
       instrument: 'guitar',
       color: '#ff6b6b',
       volume: 1.0,
@@ -114,7 +113,7 @@ const useDAWStore = create<DAWStore>((set, get) => ({
     },
     {
       id: 'track_2',
-      name: 'Vocals',
+      name: 'Worship Vocals',
       instrument: 'vocal',
       color: '#ff9f40',
       volume: 0.9,
@@ -129,7 +128,7 @@ const useDAWStore = create<DAWStore>((set, get) => ({
     },
     {
       id: 'track_3',
-      name: 'Bass Guitar',
+      name: 'Foundation Bass',
       instrument: 'bass',
       color: '#ffcd56',
       volume: 0.8,
@@ -144,7 +143,7 @@ const useDAWStore = create<DAWStore>((set, get) => ({
     },
     {
       id: 'track_4',
-      name: 'Drums',
+      name: 'Holy Drums',
       instrument: 'drums',
       color: '#c9cbcf',
       volume: 1.0,
@@ -156,21 +155,6 @@ const useDAWStore = create<DAWStore>((set, get) => ({
       bpm: 120,
       waveformData: generateWaveformData('drums'),
       audio_data: 'sample_data'
-    },
-    {
-      id: 'track_5',
-      name: 'Synth Keys',
-      instrument: 'keys',
-      color: '#9966ff',
-      volume: 0.7,
-      pan: 0.0,
-      muted: false,
-      solo: false,
-      isRecording: false,
-      isPlaying: false,
-      bpm: 120,
-      waveformData: generateWaveformData('keys'),
-      audio_data: 'sample_data'
     }
   ],
   isPlaying: false,
@@ -181,13 +165,15 @@ const useDAWStore = create<DAWStore>((set, get) => ({
   addTrack: () => {
     const instruments = ['guitar', 'vocal', 'bass', 'drums', 'keys'];
     const colors = ['#ff6b6b', '#ff9f40', '#ffcd56', '#4bc0c0', '#9966ff'];
+    const names = ['Divine Guitar', 'Sacred Vocals', 'Holy Bass', 'Blessed Drums', 'Worship Keys'];
     const trackCount = get().tracks.length;
     const instrument = instruments[trackCount % instruments.length];
     const color = colors[trackCount % colors.length];
+    const name = names[trackCount % names.length];
     
     const newTrack: Track = {
       id: `track_${Date.now()}`,
-      name: `Track ${trackCount + 1}`,
+      name,
       instrument,
       color,
       volume: 1.0,
@@ -220,7 +206,7 @@ const useDAWStore = create<DAWStore>((set, get) => ({
     try {
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission required', 'Audio recording permission is needed');
+        Alert.alert('Permission required', 'Audio recording permission is needed for worship recording');
         return;
       }
 
@@ -236,7 +222,7 @@ const useDAWStore = create<DAWStore>((set, get) => ({
       get().updateTrack(trackId, { recording, isRecording: true });
     } catch (error) {
       console.error('Failed to start recording:', error);
-      Alert.alert('Error', 'Failed to start recording');
+      Alert.alert('Error', 'Failed to start blessed recording');
     }
   },
   
@@ -265,7 +251,7 @@ const useDAWStore = create<DAWStore>((set, get) => ({
       }
     } catch (error) {
       console.error('Failed to stop recording:', error);
-      Alert.alert('Error', 'Failed to stop recording');
+      Alert.alert('Error', 'Failed to complete blessed recording');
     }
   },
   
@@ -328,13 +314,56 @@ const useDAWStore = create<DAWStore>((set, get) => ({
   }
 }));
 
+// Cross SVG Component
+const CrossIcon: React.FC<{ size: number; color: string }> = ({ size, color }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Defs>
+      <LinearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor={color} stopOpacity="1" />
+        <Stop offset="50%" stopColor="#ffcd56" stopOpacity="0.9" />
+        <Stop offset="100%" stopColor={color} stopOpacity="0.8" />
+      </LinearGradient>
+    </Defs>
+    <Path
+      d="M12 2L12 8L18 8L18 10L12 10L12 14L18 14L18 16L12 16L12 22L10 22L10 16L4 16L4 14L10 14L10 10L4 10L4 8L10 8L10 2L12 2Z"
+      fill="url(#crossGradient)"
+      stroke={color}
+      strokeWidth="0.5"
+    />
+  </Svg>
+);
+
+// Large Decorative Cross
+const DecorateCross: React.FC<{ width: number; height: number }> = ({ width, height }) => (
+  <Svg width={width} height={height} style={styles.backgroundDecoration}>
+    <Defs>
+      <LinearGradient id="largeCrossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="#ff4500" stopOpacity="0.15" />
+        <Stop offset="50%" stopColor="#ffcd56" stopOpacity="0.1" />
+        <Stop offset="100%" stopColor="#ff4500" stopOpacity="0.05" />
+      </LinearGradient>
+    </Defs>
+    {/* Large Cross Background */}
+    <Path
+      d="M180 20L180 120L120 120L120 140L180 140L180 240L200 240L200 140L260 140L260 120L200 120L200 20L180 20Z"
+      fill="url(#largeCrossGradient)"
+      stroke="#ff4500"
+      strokeWidth="1"
+      opacity="0.3"
+    />
+    {/* Small crosses scattered */}
+    <Path d="M50 150L50 130L55 130L55 150L65 150L65 155L55 155L55 170L50 170L50 155L40 155L40 150L50 150Z" fill="url(#largeCrossGradient)" />
+    <Path d="M320 200L320 185L325 185L325 200L335 200L335 205L325 205L325 220L320 220L320 205L310 205L310 200L320 200Z" fill="url(#largeCrossGradient)" />
+  </Svg>
+);
+
 // Waveform Component
 const WaveformDisplay: React.FC<{ waveformData: number[], color: string, isPlaying: boolean }> = ({ 
   waveformData, 
   color, 
   isPlaying 
 }) => {
-  const waveformWidth = width - 120;
+  const waveformWidth = width - 140;
   const waveformHeight = 50;
   
   const generatePath = () => {
@@ -353,7 +382,6 @@ const WaveformDisplay: React.FC<{ waveformData: number[], color: string, isPlayi
       }
     });
     
-    // Add bottom path
     for (let i = waveformData.length - 1; i >= 0; i--) {
       const x = (i / waveformData.length) * waveformWidth;
       const amplitude = waveformData[i];
@@ -388,8 +416,6 @@ const TrackStrip: React.FC<{ track: Track, index: number }> = ({ track, index })
   const { 
     startRecording, 
     stopRecording, 
-    playTrack, 
-    stopTrack, 
     toggleMute, 
     toggleSolo, 
     removeTrack 
@@ -428,13 +454,14 @@ const TrackStrip: React.FC<{ track: Track, index: number }> = ({ track, index })
       
       {/* Track Info */}
       <View style={styles.trackInfo}>
+        <Text style={styles.trackName}>{track.name}</Text>
         <Text style={styles.bpmText}>{track.bpm} BPM</Text>
         <View style={styles.trackControls}>
           <TouchableOpacity 
             style={[styles.trackControlButton, track.isRecording && styles.recordingActive]}
             onPress={() => track.isRecording ? stopRecording(track.id) : startRecording(track.id)}
           >
-            <View style={styles.recordDot} />
+            <View style={[styles.recordDot, track.isRecording && styles.recordingDot]} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.trackControlButton, track.muted && styles.muteActive]}
@@ -454,10 +481,57 @@ const TrackStrip: React.FC<{ track: Track, index: number }> = ({ track, index })
   );
 };
 
+// Navigation Component
+const NavigationBar: React.FC = () => {
+  const router = useRouter();
+  
+  return (
+    <View style={styles.navigationBar}>
+      <TouchableOpacity 
+        style={[styles.navButton, styles.activeNavButton]}
+      >
+        <Ionicons name="recording" size={20} color="#ffffff" />
+        <Text style={styles.navButtonText}>Multitrack</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/effects')}
+      >
+        <Ionicons name="options" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Effects</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/sequencer')}
+      >
+        <Ionicons name="grid" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Beats</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/samples')}
+      >
+        <Ionicons name="library" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Library</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.navButton}
+        onPress={() => router.push('/waveform')}
+      >
+        <Ionicons name="pulse" size={20} color="#ffb366" />
+        <Text style={[styles.navButtonText, styles.inactiveNavText]}>Waveform</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 // Main DAW Component
 export default function DAWApp() {
-  const { tracks, addTrack, isPlaying, playbackPosition, setPlaybackPosition } = useDAWStore();
-  const router = useRouter();
+  const { tracks, addTrack, isPlaying, playbackPosition } = useDAWStore();
   const [masterPlay, setMasterPlay] = useState(false);
 
   useEffect(() => {
@@ -472,26 +546,37 @@ export default function DAWApp() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a0f0f" />
       
-      {/* Header */}
+      {/* Background Cross */}
+      <DecorateCross width={400} height={800} />
+      
+      {/* Header with Graffiti Title */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Ionicons name="chevron-back" size={28} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.appTitle}>Multi Track Recording</Text>
-        <TouchableOpacity style={styles.menuButton}>
-          <View style={styles.menuLines}>
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
+        <View style={styles.titleContainer}>
+          <CrossIcon size={32} color="#ff4500" />
+          <View style={styles.titleTextContainer}>
+            <Text style={styles.mainTitle}>Gospel and Praise</Text>
+            <Text style={styles.subTitle}>D.A.W. To Worship Yahweh</Text>
           </View>
-        </TouchableOpacity>
+          <CrossIcon size={32} color="#ff4500" />
+        </View>
       </View>
+      
+      {/* Navigation Bar */}
+      <NavigationBar />
       
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
           <View style={[styles.progressFill, { width: `${playbackPosition * 100}%` }]} />
         </View>
+      </View>
+      
+      {/* Add Track Button */}
+      <View style={styles.addTrackContainer}>
+        <TouchableOpacity style={styles.addTrackButton} onPress={addTrack}>
+          <CrossIcon size={16} color="#ffffff" />
+          <Text style={styles.addTrackText}>Add Blessed Track</Text>
+        </TouchableOpacity>
       </View>
       
       {/* Tracks */}
@@ -505,26 +590,19 @@ export default function DAWApp() {
       <View style={styles.transportContainer}>
         <TouchableOpacity style={styles.transportButton}>
           <View style={styles.transportIcon}>
-            <Ionicons name="play" size={20} color="#ff4500" />
+            <Ionicons name="play-back" size={18} color="#ff4500" />
           </View>
-          <Text style={styles.transportLabel}>Play</Text>
+          <Text style={styles.transportLabel}>Previous</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
           style={styles.transportButton}
           onPress={() => setMasterPlay(!masterPlay)}
         >
-          <View style={[styles.transportIcon, masterPlay && styles.transportActive]}>
-            <Ionicons name={masterPlay ? "pause" : "play"} size={20} color="#ff4500" />
+          <View style={[styles.transportIcon, styles.mainTransportIcon, masterPlay && styles.transportActive]}>
+            <Ionicons name={masterPlay ? "pause" : "play"} size={24} color="#ffffff" />
           </View>
-          <Text style={styles.transportLabel}>Play</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.transportButton}>
-          <View style={styles.transportIcon}>
-            <View style={styles.recordButton} />
-          </View>
-          <Text style={styles.transportLabel}>Record</Text>
+          <Text style={styles.transportLabel}>{masterPlay ? 'Pause' : 'Play'}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.transportButton}>
@@ -540,6 +618,20 @@ export default function DAWApp() {
           </View>
           <Text style={styles.transportLabel}>Stop</Text>
         </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.transportButton}>
+          <View style={styles.transportIcon}>
+            <Ionicons name="play-forward" size={18} color="#ff4500" />
+          </View>
+          <Text style={styles.transportLabel}>Next</Text>
+        </TouchableOpacity>
+      </View>
+      
+      {/* Sacred Footer */}
+      <View style={styles.sacredFooter}>
+        <CrossIcon size={24} color="#ffcd56" />
+        <Text style={styles.blessingText}>"Make a joyful noise unto the Lord"</Text>
+        <CrossIcon size={24} color="#ffcd56" />
       </View>
     </SafeAreaView>
   );
