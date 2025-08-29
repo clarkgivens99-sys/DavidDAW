@@ -574,6 +574,9 @@ export default function DAWApp() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a0f0f" />
       
+      {/* Corner Crosses */}
+      <CornerCrosses />
+      
       {/* Background Cross */}
       <DecorateCross width={400} height={800} />
       
